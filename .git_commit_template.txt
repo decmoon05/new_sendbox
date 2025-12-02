@@ -1,0 +1,35 @@
+# Git Commit Message Template (English)
+
+## Format
+<type>: <subject>
+
+## Types
+- feat: A new feature
+- fix: A bug fix
+- docs: Documentation only changes
+- style: Code style changes (formatting, missing semi colons, etc)
+- refactor: Code refactoring
+- perf: Performance improvements
+- test: Adding or updating tests
+- chore: Maintenance tasks
+- build: Changes to build system
+- ci: Changes to CI configuration
+
+## Examples
+- feat: Add AI message recommendation feature
+- fix: Resolve SMS notification listener crash
+- docs: Update README with setup instructions
+- style: Format code according to style guide
+- refactor: Extract message parsing logic to separate service
+- perf: Optimize database queries
+- test: Add unit tests for message service
+- chore: Update dependencies
+- build: Configure GitHub Actions workflow
+- ci: Add Flutter CI pipeline
+
+## Subject Rules
+- Use imperative mood ("Add feature" not "Added feature")
+- No period at the end
+- 50 characters or less
+- Capitalize first letter
+

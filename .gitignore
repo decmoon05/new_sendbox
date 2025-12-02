@@ -1,0 +1,261 @@
+# Flutter/Dart/Pub related
+**/packages/pubspec.lock
+**/packages/.flutter-plugins
+**/packages/.flutter-plugins-dependencies
+**/packages/.dart_tool/
+**/packages/.flutter-plugins
+**/packages/.pub-cache/
+**/packages/.pub/
+**/packages/build/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VS Code related
+.vscode/
+
+# Android related
+**/android/**/gradle-wrapper.jar
+**/android/.gradle
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+**/android/app/debug
+**/android/app/profile
+**/android/app/release
+
+# iOS related
+**/ios/**/*.mode1v3
+**/ios/**/*.mode2v3
+**/ios/**/*.moved-aside
+**/ios/**/*.pbxuser
+**/ios/**/*.perspectivev3
+**/ios/**/*sync/
+**/ios/**/.sconsign.dblite
+**/ios/**/.tags*
+**/ios/**/.vagrant/
+**/ios/**/DerivedData/
+**/ios/**/Icon?
+**/ios/**/Pods/
+**/ios/**/.symlinks/
+**/ios/**/profile
+**/ios/**/xcuserdata
+**/ios/.generated/
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/ephemeral/
+**/ios/Flutter/app.flx
+**/ios/Flutter/app.zip
+**/ios/Flutter/flutter_assets/
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.*
+
+# Web related
+**/web/index.html
+**/web/main.dart.js
+**/web/main.dart.js.map
+
+# Exceptions to above rules.
+!**/ios/**/default.mode1v3
+!**/ios/**/default.mode2v3
+!**/ios/**/default.pbxuser
+!**/ios/**/default.perspectivev3
+
+# 보안 관련 - 절대 커밋하면 안 되는 파일들
+
+# API 키 및 시크릿
+*.key
+*.pem
+*.p12
+*.jks
+*.keystore
+**/android/app/keystore.properties
+**/ios/Runner/GoogleService-Info.plist
+**/lib/core/config/api_keys.dart
+**/lib/core/config/secrets.dart
+**/*_key.dart
+**/*_secret.dart
+**/*_credentials.dart
+
+# 환경 변수 파일
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+*.env
+.envrc
+
+# Firebase 설정 파일 (민감한 정보 포함)
+**/google-services.json
+**/GoogleService-Info.plist
+firebase_options.dart
+firebase_options.g.dart
+
+# 암호화 키
+*.enc
+*.encrypted
+**/keys/
+**/certificates/
+**/ssl/
+
+# 데이터베이스 파일 (로컬 개발용)
+*.db
+*.sqlite
+*.sqlite3
+*.hive
+*.isar
+*.realm
+
+# 로그 파일 (민감한 정보 포함 가능)
+*.log
+logs/
+**/logs/
+
+# 백업 파일
+*.backup
+*.bak
+*.tmp
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# 테스트 관련
+coverage/
+test/.test_coverage.dart
+**/test_driver/
+**/integration_test/screenshots/
+
+# 빌드 산출물
+build/
+**/build/
+**/dist/
+**/out/
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+
+# 패키지 관련
+**/packages/*/lib/generated/
+**/packages/*/lib/**/*.g.dart
+**/packages/*/lib/**/*.freezed.dart
+
+# 자동 생성 파일
+*.g.dart
+*.freezed.dart
+*.mocks.dart
+*.gr.dart
+*.pb.dart
+*.pbjson.dart
+*.pbenum.dart
+
+# 로컬 설정 파일
+local.properties
+local_config.dart
+dev_config.dart
+
+# 문서 빌드 산출물
+docs/_build/
+docs/.doctrees/
+
+# 프로파일링 데이터
+*.prof
+*.trace
+
+# 임시 파일
+tmp/
+temp/
+*.tmp
+
+# IDE 설정 (개인 설정)
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries/
+.idea/shelf/
+*.swp
+*.swo
+
+# 노트북 파일 (개인 메모)
+*.ipynb
+notes/
+personal/
+
+# 크래시 리포트
+crash_reports/
+**/crash_reports/
+
+# 사용자 데이터 (개인정보)
+user_data/
+test_data/
+sample_data/
+**/*_test_data.*
+
+# 모니터링 및 분석 (민감한 데이터 포함 가능)
+analytics/
+monitoring/
+**/analytics/
+**/monitoring/
+
+# 백업 및 아카이브
+*.zip
+*.tar
+*.tar.gz
+*.rar
+backups/
+archives/
+
+# Node.js (백엔드가 Node.js를 사용하는 경우)
+node_modules/
+npm-debug.log
+yarn-error.log
+.pnpm-debug.log
+
+# Python (백엔드가 Python을 사용하는 경우)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# 비고: 다음 파일들은 커밋해도 되지만 주의 필요
+# - README.md (일반 정보만)
+# - LICENSE (라이선스 파일)
+# - docs/ (일반 문서, API 키 제외)
+# - assets/images/ (일반 이미지, 민감한 정보 없음)
+
+# Git 관련 보안
+# .git 폴더는 이미 Git이 관리하므로 제외 불필요
+
+# 추가 보안: API 키 체크 리스트
+# 다음 패턴의 파일이 커밋되지 않도록 주의:
+# - *api*key*
+# - *secret*
+# - *password*
+# - *token*
+# - *credential*
+
