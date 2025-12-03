@@ -1,0 +1,87 @@
+name: sendbox
+description: AI-powered personalized message recommendation service
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # 상태 관리
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.3
+
+  # 로컬 데이터베이스
+  isar: ^3.1.0
+  isar_flutter_libs: ^3.1.0
+
+  # 네트워크
+  dio: ^5.4.0
+  connectivity_plus: ^5.0.2
+
+  # Firebase
+  firebase_core: ^3.0.0
+  firebase_auth: ^5.0.0
+  cloud_firestore: ^5.0.0
+  firebase_storage: ^12.0.0
+  firebase_crashlytics: ^4.0.0
+  firebase_analytics: ^11.0.0
+
+  # 로컬화
+  easy_localization: ^3.0.3
+
+  # 암호화 및 보안
+  crypto: ^3.0.3
+  flutter_secure_storage: ^9.0.0
+
+  # 유틸리티
+  uuid: ^4.3.0
+  intl: ^0.19.0
+  shared_preferences: ^2.2.2
+  path_provider: ^2.1.2
+  path: ^1.9.0
+
+  # 플랫폼 통합
+  flutter_local_notifications: ^17.0.0
+  permission_handler: ^11.3.0
+
+  # UI
+  flutter_svg: ^2.0.10+1
+  cached_network_image: ^3.3.1
+  shimmer: ^3.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+  # 코드 생성
+  build_runner: ^2.4.9
+  json_serializable: ^6.7.1
+  freezed_annotation: ^2.4.1
+  riverpod_generator: ^2.3.9
+
+  # Isar 코드 생성
+  isar_generator: ^3.1.0+1
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/fonts/
+
+  fonts:
+    - family: Pretendard
+      fonts:
+        - asset: assets/fonts/Pretendard-Regular.ttf
+        - asset: assets/fonts/Pretendard-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Pretendard-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Pretendard-Bold.ttf
+          weight: 700
+

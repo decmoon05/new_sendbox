@@ -35,6 +35,11 @@ AI가 프로젝트를 이해하고 코드를 생성하기 위해 **반드시** �
 - [PROJECT_PLAN.md](01-for-ai/PROJECT_PLAN.md) - 프로젝트 계획 및 요구사항
 - [ROADMAP.md](01-for-ai/ROADMAP.md) - 개발 로드맵
 
+### 추가 설계 문서
+- [API_SPECIFICATION.md](01-for-ai/API_SPECIFICATION.md) - API 명세서
+- [DATA_MODELS.md](01-for-ai/DATA_MODELS.md) - 데이터 모델 상세 설계
+- [TESTING_STRATEGY.md](01-for-ai/TESTING_STRATEGY.md) - 테스트 전략
+
 **이 폴더의 문서는 AI가 코드 생성 시 항상 참고해야 합니다.**
 
 ---
