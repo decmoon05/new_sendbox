@@ -147,3 +147,4 @@ git config --global commit.template .git_commit_template.txt
 
 **이제 영어로 깔끔한 커밋 메시지를 작성할 수 있습니다!** 📝✨
 
+

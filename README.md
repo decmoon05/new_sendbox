@@ -1,4 +1,4 @@
-# SendBox 프로젝트 재구축 계획
+# SendBox 프로젝트 재구축
 
 > AI 기반 개인 맞춤형 메시지 추천 서비스 - 전체 재구축 계획서
 
@@ -10,108 +10,58 @@ SendBox는 전화/메시지 답변 스트레스를 해소하기 위한 AI 어시
 
 ## 📚 문서 구조
 
-이 프로젝트의 계획 문서는 다음과 같이 구성되어 있습니다:
+프로젝트 문서는 **목적별로 체계적으로 정리**되어 있습니다:
 
-### 1. [프로젝트 계획서](PROJECT_PLAN.md)
-- 프로젝트 개요
-- 핵심 요구사항
-- 기술 스택
-- 기본 아키텍처
+### 🤖 [AI 필수 문서](docs/01-for-ai/) - AI가 반드시 봐야하는 문서
 
-### 2. [아키텍처 상세 설계](ARCHITECTURE_DESIGN.md)
-- Clean Architecture 구조
-- 레이어별 상세 설계
-- 디자인 패턴
-- 의존성 관리
+AI가 프로젝트를 이해하고 코드를 생성하기 위해 필요한 핵심 문서들입니다.
 
-### 3. [데이터베이스 스키마](DATABASE_SCHEMA.md)
-- 로컬 데이터베이스 설계
-- 클라우드 데이터베이스 설계
-- 동기화 전략
-- 암호화 전략
+- **[프로젝트 계획서](docs/01-for-ai/PROJECT_PLAN.md)** - 프로젝트 개요, 요구사항, 기술 스택
+- **[아키텍처 설계](docs/01-for-ai/ARCHITECTURE.md)** - Clean Architecture 구조
+- **[데이터베이스 스키마](docs/01-for-ai/DATABASE_SCHEMA.md)** - 데이터베이스 설계
+- **[AI 시스템 설계](docs/01-for-ai/AI_SYSTEM.md)** - AI 시스템 (온라인/오프라인)
+- **[플랫폼 통합](docs/01-for-ai/PLATFORM_INTEGRATION.md)** - 14개 플랫폼 통합 전략
+- **[보안 아키텍처](docs/01-for-ai/SECURITY.md)** - 보안 설계
+- **[UI/UX 디자인](docs/01-for-ai/UI_UX_DESIGN.md)** - 디자인 시스템
+- **[고급 기능](docs/01-for-ai/ADVANCED_FEATURES.md)** - 고급 기능 설계
+- **[확장성 원칙](docs/01-for-ai/SCALABILITY.md)** - 확장 가능한 코드 작성 가이드
+- **[개발 로드맵](docs/01-for-ai/ROADMAP.md)** - 개발 일정
 
-### 4. [AI 시스템 설계](AI_SYSTEM_DESIGN.md)
-- 온라인 AI (Gemini API)
-- 오프라인 AI (TensorFlow Lite)
-- 프롬프트 엔지니어링
-- AI 기능 상세 설계
+### 👨‍💻 [개발자 가이드](docs/02-for-developers/) - 개발자가 봐야하는 문서
 
-### 5. [플랫폼 통합 전략](PLATFORM_INTEGRATION.md)
-- SMS 통합
-- 카카오톡 통합
-- 디스코드/인스타그램/텔레그램 통합
-- 페이스북/LINE/WhatsApp 등 확장 플랫폼
-- 통합 인터페이스 설계
+개발자가 프로젝트를 시작하고 개발하는 데 필요한 문서들입니다.
 
-### 6. [보안 아키텍처](SECURITY_ARCHITECTURE.md)
-- 암호화 전략
-- 인증 및 권한
-- 데이터 프라이버시
-- 보안 감사
+- **[시작 가이드](docs/02-for-developers/GETTING_STARTED.md)** ⭐ **첫 시작 필수**
+- **[시스템 이해 가이드 (KYS)](docs/02-for-developers/KYS.md)** - 초보자 필수
+- **[Git 가이드](docs/02-for-developers/GIT_GUIDE.md)** - Git 사용법
+- **[커밋 메시지 규칙](docs/02-for-developers/COMMIT_MESSAGES.md)** - 영어 커밋 규칙
+- **[개발자 도구](docs/02-for-developers/DEVELOPER_TOOLS.md)** - 도구 추천
+- **[보안 가이드](docs/02-for-developers/SECURITY_GUIDE.md)** - 개발 보안
+- **[Flutter 선택 이유](docs/02-for-developers/WHY_FLUTTER.md)** - 기술 선택 배경
 
-### 7. [UI/UX 디자인 시스템](UI_UX_DESIGN_SYSTEM.md)
-- 디자인 원칙
-- 색상 및 타이포그래피
-- 컴포넌트 시스템
-- 애니메이션
+### 📦 [아카이브](docs/99-archive/) - 참고용
 
-### 8. [개발 로드맵](DEVELOPMENT_ROADMAP.md)
-- 개발 단계
-- 일정 계획
-- MVP 범위
-- 배포 전략
+임시 작업 파일이나 과거 작업 기록입니다. 참고용으로만 보관합니다.
 
-### 9. [KYS - 시스템 이해 가이드](KYS.md) ⭐ **초보자 필수**
-- 기술 스택 상세 설명
-- 개념 이해 (대학생 수준에 맞춤)
-- 각 기술의 역할과 동작 방식
-- 학습 자료 추천
+---
 
-### 10. [개발 보안 가이드](SECURITY_GUIDE.md) 🔒
-- Git 보안 규칙
-- API 키 관리 방법
-- 민감한 정보 보호
-- 개발 시 보안 체크리스트
+## 🚀 빠른 시작
 
-### 11. [고급 기능 설계](ADVANCED_FEATURES.md) 🚀
-- 컨텍스트 인식 메시지 분류 (공적/사적 구분)
-- 스마트 메시지 분석 (의도, 긴급도, 감정)
-- 광고 및 스팸 차단
-- 일정 연동 및 관리
-- 보안 및 사기 차단 (런타임 스캠 감지)
-- 사용자 인증 시스템 (회원가입)
-- 추가 고급 기능들
+### 새로운 개발자라면:
 
-### 12. [개발자 도구 추천](DEVELOPER_TOOLS.md) 🛠️
-- 개발 환경 도구 (IDE, 에디터)
-- 디자인 및 UI 도구
-- API 개발 및 테스트 도구
-- 배포 및 CI/CD 플랫폼
-- 모니터링 및 분석 도구
-- 협업 도구
-- 비용별 추천 가이드
+1. **[개발 시작 가이드](docs/02-for-developers/GETTING_STARTED.md)** 읽기
+2. **[시스템 이해 가이드 (KYS)](docs/02-for-developers/KYS.md)** 읽기
+3. 개발 환경 설정
+4. 개발 시작!
 
-### 13. [무료 도구만으로 시작하기](FREE_SETUP_GUIDE.md) 💰
-- 완전 무료 도구 구성
-- 단계별 설치 가이드
-- 초기 설정 체크리스트
-- 무료 플랜 제한 및 대응
-- 개발 시작 가이드
+### AI가 프로젝트를 이해한다면:
 
-### 14. [왜 Flutter인가?](WHY_FLUTTER.md) 🎯
-- Flutter vs React Native 비교
-- SendBox 프로젝트에 Flutter가 적합한 이유
-- 성능, UI/UX, 개발 생산성 분석
+1. **[프로젝트 계획서](docs/01-for-ai/PROJECT_PLAN.md)** 읽기
+2. **[아키텍처 설계](docs/01-for-ai/ARCHITECTURE.md)** 읽기
+3. **[확장성 원칙](docs/01-for-ai/SCALABILITY.md)** 읽기
+4. 코드 생성 시작!
 
-### 15. [Git 설정 가이드](GIT_SETUP.md) 📝
-- Git 초기화
-- GitHub 연동
-- 커밋 및 푸시 방법
-
-### 16. [FVM 가이드](FVM_GUIDE.md) 🔧
-- Flutter 버전 관리 도구
-- 프로젝트별 버전 고정
-- 설치 및 사용 방법
+**자세한 문서 구조:** [docs/README.md](docs/README.md)
 
 ---
 
@@ -133,7 +83,7 @@ SendBox는 전화/메시지 답변 스트레스를 해소하기 위한 AI 어시
 ### 비기능 요구사항
 - ✅ 하이브리드 데이터 저장 (로컬 + 클라우드)
 - ✅ 오프라인 모드 완전 지원 (로컬 AI 모델)
-- ✅ 높은 보안 수준
+- ✅ 높은 보안 수준 (대기업 SNS 수준)
 - ✅ 확장성 (소규모 → 대규모)
 - ✅ 에러 추적 및 모니터링
 
@@ -173,6 +123,10 @@ sendbox/
 │   └── presentation/            # 프레젠테이션 레이어
 ├── android/                     # Android 네이티브
 ├── assets/                      # 리소스
+├── docs/                        # 문서
+│   ├── 01-for-ai/              # AI 필수 문서
+│   ├── 02-for-developers/      # 개발자 가이드
+│   └── 99-archive/             # 아카이브
 └── test/                        # 테스트
 ```
 
@@ -187,6 +141,8 @@ sendbox/
 - 생체 인증 지원
 - 앱 잠금 기능
 
+**자세한 내용:** [보안 아키텍처](docs/01-for-ai/SECURITY.md) | [개발 보안 가이드](docs/02-for-developers/SECURITY_GUIDE.md)
+
 ---
 
 ## 🚀 개발 단계
@@ -198,6 +154,8 @@ sendbox/
 5. **Phase 5**: 안정화 및 배포 준비 (4주)
 
 **총 예상 기간**: 24주 (6개월)
+
+**자세한 일정:** [개발 로드맵](docs/01-for-ai/ROADMAP.md)
 
 ---
 
@@ -240,6 +198,8 @@ sendbox/
 - **일관성**: 통일된 디자인 시스템
 - **접근성**: 모든 사용자 접근 가능
 
+**자세한 내용:** [UI/UX 디자인 시스템](docs/01-for-ai/UI_UX_DESIGN.md)
+
 ---
 
 ## 📊 MVP 범위
@@ -258,17 +218,33 @@ sendbox/
 
 ---
 
+## 📖 문서 읽는 순서
+
+### 새로운 개발자
+1. 이 README.md
+2. [개발 시작 가이드](docs/02-for-developers/GETTING_STARTED.md)
+3. [시스템 이해 가이드 (KYS)](docs/02-for-developers/KYS.md)
+
+### AI가 프로젝트 이해하기
+1. 이 README.md
+2. [프로젝트 계획서](docs/01-for-ai/PROJECT_PLAN.md)
+3. [아키텍처 설계](docs/01-for-ai/ARCHITECTURE.md)
+4. [확장성 원칙](docs/01-for-ai/SCALABILITY.md)
+
+---
+
 ## 🔄 다음 단계
 
-1. 사용자 승인 후 프로젝트 초기화
-2. Phase 1 개발 시작
-3. 정기적인 진행 상황 리뷰
+1. ✅ 문서 정리 완료
+2. ⏳ 사용자 승인 후 프로젝트 초기화
+3. ⏳ Phase 1 개발 시작
+4. ⏳ 정기적인 진행 상황 리뷰
 
 ---
 
 ## 📄 라이선스
 
-[라이선스 정보]
+[라이선스 정보](LICENSE)
 
 ---
 
@@ -282,5 +258,6 @@ Team 전메추
 
 ---
 
-**상세한 내용은 각 문서를 참고하세요.**
+**📚 모든 문서는 `docs/` 폴더에서 확인할 수 있습니다.**
 
+**🚀 개발 시작은 [개발 시작 가이드](docs/02-for-developers/GETTING_STARTED.md)를 참고하세요!**
