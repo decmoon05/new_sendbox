@@ -70,30 +70,11 @@ class ProfileListPage extends ConsumerWidget {
     }
 
     if (state.error != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.error_outline,
-              size: 64,
-              color: AppColors.error,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              state.error!,
-              style: Theme.of(context).textTheme.bodyLarge,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                ref.read(profileListProvider.notifier).loadProfiles();
-              },
-              child: const Text('다시 시도'),
-            ),
-          ],
-        ),
+      return ErrorDisplayWidget.dataLoad(
+        onRetry: () {
+          ref.read(profileListProvider.notifier).loadProfiles();
+        },
+        message: state.error,
       );
     }
 

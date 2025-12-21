@@ -13,6 +13,7 @@ import '../../../../../domain/repositories/profile_repository.dart';
 import '../../../../../core/di/providers.dart';
 import '../../../ai_recommend/presentation/providers/ai_recommendation_provider.dart';
 import '../../../../routes/route_names.dart';
+import '../../../shared/widgets/error_widget.dart';
 
 /// 대화 상세 페이지
 class ChatDetailPage extends ConsumerStatefulWidget {
@@ -73,20 +74,11 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
     }
 
     if (state.error != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 64, color: AppColors.error),
-            const SizedBox(height: 16),
-            Text(state.error!),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => ref.read(chatDetailProvider(widget.conversationId).notifier).refresh(),
-              child: const Text('다시 시도'),
-            ),
-          ],
-        ),
+      return ErrorDisplayWidget.dataLoad(
+        onRetry: () {
+          ref.read(chatDetailProvider(widget.conversationId).notifier).refresh();
+        },
+        message: state.error,
       );
     }
 

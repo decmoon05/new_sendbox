@@ -95,30 +95,11 @@ class ChatPage extends ConsumerWidget {
     }
 
     if (state.error != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.error_outline,
-              size: 64,
-              color: AppColors.error,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              state.error!,
-              style: Theme.of(context).textTheme.bodyLarge,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                ref.read(chatProvider.notifier).loadConversations();
-              },
-              child: const Text('다시 시도'),
-            ),
-          ],
-        ),
+      return ErrorDisplayWidget.dataLoad(
+        onRetry: () {
+          ref.read(chatProvider.notifier).loadConversations();
+        },
+        message: state.error,
       );
     }
 
