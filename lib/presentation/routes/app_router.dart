@@ -4,6 +4,7 @@ import '../features/chat/presentation/pages/chat_page.dart';
 import '../features/chat/presentation/pages/chat_detail_page.dart';
 import '../features/profile/presentation/pages/profile_list_page.dart';
 import '../features/profile/presentation/pages/profile_detail_page.dart';
+import '../features/profile/presentation/pages/profile_edit_page.dart';
 import '../features/settings/presentation/pages/settings_page.dart';
 
 /// 앱 라우터
@@ -39,6 +40,13 @@ class AppRouter {
         final id = settings.arguments as String? ?? '';
         return MaterialPageRoute(
           builder: (_) => ProfileDetailPage(profileId: id),
+          settings: settings,
+        );
+
+      case RouteNames.profileEdit:
+        final id = settings.arguments as String? ?? '';
+        return MaterialPageRoute(
+          builder: (_) => ProfileEditPage(profileId: id),
           settings: settings,
         );
 

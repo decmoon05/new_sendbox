@@ -4,6 +4,7 @@ import '../../../../../domain/entities/contact_profile.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/datetime_extensions.dart';
 import '../../../../../core/theme/app_colors.dart';
+import '../../../../routes/route_names.dart';
 import '../providers/profile_provider.dart';
 
 /// 프로필 상세 페이지
