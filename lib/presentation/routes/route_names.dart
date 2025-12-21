@@ -10,6 +10,7 @@ class RouteNames {
   // 메인
   static const String home = '/home';
   static const String chat = '/chat';
+  static const String conversationCreate = '/chat/create';
   static const String chatDetail = '/chat/:id';
 
   // 프로필

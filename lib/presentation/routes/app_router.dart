@@ -3,6 +3,7 @@ import 'route_names.dart';
 import '../features/chat/presentation/pages/chat_page.dart';
 import '../features/chat/presentation/pages/chat_detail_page.dart';
 import '../features/profile/presentation/pages/profile_list_page.dart';
+import '../features/profile/presentation/pages/profile_create_page.dart';
 import '../features/profile/presentation/pages/profile_detail_page.dart';
 import '../features/profile/presentation/pages/profile_edit_page.dart';
 import '../features/settings/presentation/pages/settings_page.dart';

@@ -57,7 +57,7 @@ class ProfileListPage extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO: 새 프로필 추가
+          Navigator.pushNamed(context, RouteNames.profileCreate);
         },
         child: const Icon(Icons.person_add),
       ),

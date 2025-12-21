@@ -82,7 +82,7 @@ class ChatPage extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO: 새 대화 시작
+          Navigator.pushNamed(context, RouteNames.conversationCreate);
         },
         child: const Icon(Icons.edit),
       ),
