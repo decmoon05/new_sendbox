@@ -39,16 +39,17 @@ class SyncStatusModel {
   }
 
   /// Entity에서 생성
-  factory SyncStatusModel.fromEntity(SyncStatus status) {
-    return SyncStatusModel()
-      ..statusId = status.id
-      ..type = _encodeType(status.type)
-      ..entityId = status.entityId
-      ..state = _encodeState(status.state)
-      ..lastSyncedAt = status.lastSyncedAt
-      ..errorMessage = status.errorMessage
-      ..retryCount = status.retryCount
-      ..createdAt = DateTime.now();
+  static SyncStatusModel fromEntity(SyncStatus status) {
+    final model = SyncStatusModel();
+    model.statusId = status.id;
+    model.type = _encodeTypeStatic(status.type);
+    model.entityId = status.entityId;
+    model.state = _encodeStateStatic(status.state);
+    model.lastSyncedAt = status.lastSyncedAt;
+    model.errorMessage = status.errorMessage;
+    model.retryCount = status.retryCount;
+    model.createdAt = DateTime.now();
+    return model;
   }
 
   SyncType _parseType(String type) {
@@ -75,7 +76,7 @@ class SyncStatusModel {
     }
   }
 
-  String _encodeType(SyncType type) {
+  static String _encodeTypeStatic(SyncType type) {
     switch (type) {
       case SyncType.profile:
         return 'profile';
@@ -86,7 +87,7 @@ class SyncStatusModel {
     }
   }
 
-  String _encodeState(SyncState state) {
+  static String _encodeStateStatic(SyncState state) {
     switch (state) {
       case SyncState.syncing:
         return 'syncing';

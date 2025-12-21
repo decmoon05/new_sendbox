@@ -7,6 +7,11 @@ import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/datetime_extensions.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../ai_recommend/presentation/widgets/ai_recommendation_card.dart';
+import '../providers/chat_detail_provider.dart';
+import '../../../../../domain/entities/contact_profile.dart';
+import '../../../../../domain/repositories/profile_repository.dart';
+import '../../../../../core/di/providers.dart';
+import '../../../ai_recommend/presentation/providers/ai_recommendation_provider.dart';
 
 /// 대화 상세 페이지
 class ChatDetailPage extends ConsumerStatefulWidget {
@@ -211,6 +216,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
     Conversation conversation,
     ContactProfile profile,
   ) {
+    showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(

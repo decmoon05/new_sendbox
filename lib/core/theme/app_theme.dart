@@ -30,7 +30,7 @@ class AppTheme {
     ),
     
     // 카드 테마
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 0,
       color: AppColors.surface,
       shape: RoundedRectangleBorder(
@@ -95,7 +95,7 @@ class AppTheme {
     ),
     
     // 텍스트 테마
-    textTheme: const TextTheme(
+    textTheme: TextTheme(
       displayLarge: AppTextStyles.headline1,
       displayMedium: AppTextStyles.headline2,
       displaySmall: AppTextStyles.headline3,
@@ -135,7 +135,7 @@ class AppTheme {
     ),
     
     // 카드 테마
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 0,
       color: AppColors.surfaceDark,
       shape: RoundedRectangleBorder(
@@ -200,7 +200,7 @@ class AppTheme {
     ),
     
     // 텍스트 테마
-    textTheme: const TextTheme(
+    textTheme: TextTheme(
       displayLarge: AppTextStyles.headline1Dark,
       displayMedium: AppTextStyles.headline2Dark,
       displaySmall: AppTextStyles.headline3Dark,

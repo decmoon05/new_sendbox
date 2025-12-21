@@ -58,23 +58,24 @@ class ContactProfileModel {
   }
 
   /// Entity에서 생성
-  factory ContactProfileModel.fromEntity(ContactProfile profile) {
-    return ContactProfileModel()
-      ..profileId = profile.id
-      ..name = profile.name
-      ..phoneNumber = profile.phoneNumber
-      ..email = profile.email
-      ..photoUrl = profile.photoUrl
-      ..platformsJson = profile.platforms.isNotEmpty
-          ? _encodePlatforms(profile.platforms)
-          : null
-      ..aiAnalysisJson =
-          profile.aiAnalysis != null ? _encodeAiAnalysis(profile.aiAnalysis!) : null
-      ..tagsJson = profile.tags.isNotEmpty ? _encodeTags(profile.tags) : null
-      ..notes = profile.notes
-      ..priority = profile.priority
-      ..createdAt = profile.createdAt
-      ..updatedAt = profile.updatedAt;
+  static ContactProfileModel fromEntity(ContactProfile profile) {
+    final model = ContactProfileModel();
+    model.profileId = profile.id;
+    model.name = profile.name;
+    model.phoneNumber = profile.phoneNumber;
+    model.email = profile.email;
+    model.photoUrl = profile.photoUrl;
+    model.platformsJson = profile.platforms.isNotEmpty
+        ? _encodePlatformsStatic(profile.platforms)
+        : null;
+    model.aiAnalysisJson =
+        profile.aiAnalysis != null ? _encodeAiAnalysisStatic(profile.aiAnalysis!) : null;
+    model.tagsJson = profile.tags.isNotEmpty ? _encodeTagsStatic(profile.tags) : null;
+    model.notes = profile.notes;
+    model.priority = profile.priority;
+    model.createdAt = profile.createdAt;
+    model.updatedAt = profile.updatedAt;
+    return model;
   }
 
   // JSON 파싱 헬퍼
@@ -90,15 +91,15 @@ class ContactProfileModel {
     return JsonHelper.decodeStringList(json);
   }
 
-  String _encodePlatforms(List<PlatformIdentifier> platforms) {
+  static String _encodePlatformsStatic(List<PlatformIdentifier> platforms) {
     return JsonHelper.encodePlatforms(platforms);
   }
 
-  String _encodeAiAnalysis(ProfileAnalysis analysis) {
+  static String _encodeAiAnalysisStatic(ProfileAnalysis analysis) {
     return JsonHelper.encodeProfileAnalysis(analysis);
   }
 
-  String _encodeTags(List<String> tags) {
+  static String _encodeTagsStatic(List<String> tags) {
     return JsonHelper.encodeStringList(tags);
   }
 }

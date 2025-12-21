@@ -50,16 +50,17 @@ class ConversationModel {
   }
 
   /// Entity에서 생성
-  factory ConversationModel.fromEntity(Conversation conversation) {
-    return ConversationModel()
-      ..conversationId = conversation.id
-      ..contactId = conversation.contactId
-      ..platform = conversation.platform
-      ..lastMessageAt = conversation.lastMessageAt
-      ..unreadCount = conversation.unreadCount
-      ..isPinned = conversation.isPinned
-      ..createdAt = DateTime.now()
-      ..updatedAt = DateTime.now();
+  static ConversationModel fromEntity(Conversation conversation) {
+    final model = ConversationModel();
+    model.conversationId = conversation.id;
+    model.contactId = conversation.contactId;
+    model.platform = conversation.platform;
+    model.lastMessageAt = conversation.lastMessageAt;
+    model.unreadCount = conversation.unreadCount;
+    model.isPinned = conversation.isPinned;
+    model.createdAt = DateTime.now();
+    model.updatedAt = DateTime.now();
+    return model;
   }
 }
 

@@ -27,7 +27,7 @@ final networkInfoProvider = Provider<NetworkInfo>((ref) {
 
 /// Isar 데이터베이스 Provider
 final isarProvider = FutureProvider<Isar>((ref) async {
-  return await storage.IsarStorage.getInstance();
+  return await IsarStorage.getInstance();
 });
 
 /// Firebase Firestore Provider

@@ -15,14 +15,21 @@ class NetworkInfoImpl implements NetworkInfo {
 
   @override
   Future<bool> get isConnected async {
-    final result = await _connectivity.checkConnectivity();
-    return result != ConnectivityResult.none;
+    final results = await _connectivity.checkConnectivity();
+    return results.any((result) => result != ConnectivityResult.none);
   }
 
   @override
   Future<ConnectivityResult> get connectivityResult async {
-    final result = await _connectivity.checkConnectivity();
-    return result.first;
+    final results = await _connectivity.checkConnectivity();
+    if (results.isEmpty || results.every((r) => r == ConnectivityResult.none)) {
+      return ConnectivityResult.none;
+    }
+    // 첫 번째 none이 아닌 결과 반환
+    return results.firstWhere(
+      (r) => r != ConnectivityResult.none,
+      orElse: () => ConnectivityResult.none,
+    );
   }
 
   @override

@@ -46,16 +46,17 @@ class AIRecommendationModel {
   }
 
   /// Entity에서 생성
-  factory AIRecommendationModel.fromEntity(AIRecommendation recommendation) {
-    return AIRecommendationModel()
-      ..recommendationId = recommendation.id
-      ..conversationId = recommendation.conversationId
-      ..messageContext = recommendation.messageContext
-      ..recommendationsJson = _encodeRecommendations(recommendation.recommendations)
-      ..type = _encodeType(recommendation.type)
-      ..createdAt = recommendation.createdAt
-      ..isUsed = recommendation.isUsed
-      ..selectedOptionId = recommendation.selectedOptionId;
+  static AIRecommendationModel fromEntity(AIRecommendation recommendation) {
+    final model = AIRecommendationModel();
+    model.recommendationId = recommendation.id;
+    model.conversationId = recommendation.conversationId;
+    model.messageContext = recommendation.messageContext;
+    model.recommendationsJson = _encodeRecommendationsStatic(recommendation.recommendations);
+    model.type = _encodeTypeStatic(recommendation.type);
+    model.createdAt = recommendation.createdAt;
+    model.isUsed = recommendation.isUsed;
+    model.selectedOptionId = recommendation.selectedOptionId;
+    return model;
   }
 
   List<MessageOption> _parseRecommendations(String json) {
@@ -73,11 +74,11 @@ class AIRecommendationModel {
     }
   }
 
-  String _encodeRecommendations(List<MessageOption> recommendations) {
+  static String _encodeRecommendationsStatic(List<MessageOption> recommendations) {
     return JsonHelper.encodeMessageOptions(recommendations);
   }
 
-  String _encodeType(RecommendationType type) {
+  static String _encodeTypeStatic(RecommendationType type) {
     switch (type) {
       case RecommendationType.item:
         return 'item';

@@ -51,24 +51,25 @@ class MessageModel {
   }
 
   /// Entity에서 생성
-  factory MessageModel.fromEntity(Message message) {
-    return MessageModel()
-      ..messageId = message.id
-      ..conversationId = message.conversationId
-      ..senderId = message.senderId
-      ..senderName = message.senderName
-      ..content = message.content
-      ..type = message.type == MessageType.sent ? 'sent' : 'received'
-      ..timestamp = message.timestamp
-      ..isRead = message.isRead
-      ..attachmentsJson = message.attachments != null
-          ? _encodeAttachments(message.attachments!)
-          : null
-      ..metadataJson =
-          message.metadata.isNotEmpty ? _encodeMetadata(message.metadata) : null;
+  static MessageModel fromEntity(Message message) {
+    final model = MessageModel();
+    model.messageId = message.id;
+    model.conversationId = message.conversationId;
+    model.senderId = message.senderId;
+    model.senderName = message.senderName;
+    model.content = message.content;
+    model.type = message.type == MessageType.sent ? 'sent' : 'received';
+    model.timestamp = message.timestamp;
+    model.isRead = message.isRead;
+    model.attachmentsJson = message.attachments != null
+        ? _encodeAttachmentsStatic(message.attachments!)
+        : null;
+    model.metadataJson =
+        message.metadata.isNotEmpty ? _encodeMetadataStatic(message.metadata) : null;
+    return model;
   }
 
-  // JSON 파싱 헬퍼
+  // JSON 파싱 헬퍼 (인스턴스 메서드)
   List<Attachment> _parseAttachments(String json) {
     return JsonHelper.decodeAttachments(json);
   }
@@ -77,11 +78,12 @@ class MessageModel {
     return JsonHelper.decodeMetadata(json);
   }
 
-  String _encodeAttachments(List<Attachment> attachments) {
+  // JSON 인코딩 헬퍼 (정적 메서드)
+  static String _encodeAttachmentsStatic(List<Attachment> attachments) {
     return JsonHelper.encodeAttachments(attachments);
   }
 
-  String _encodeMetadata(Map<String, dynamic> metadata) {
+  static String _encodeMetadataStatic(Map<String, dynamic> metadata) {
     return JsonHelper.encodeMetadata(metadata);
   }
 }

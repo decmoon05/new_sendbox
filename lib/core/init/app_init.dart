@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
-import '../services/storage/isar_storage.dart';
+import '../../data/services/storage/isar_storage.dart';
 
 /// 앱 초기화 클래스
 class AppInit {

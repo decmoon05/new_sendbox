@@ -70,8 +70,10 @@ class GeminiService {
     required ContactProfile profile,
     required String messageContext,
   }) {
-    final conversationHistory = conversation.messages
-        .takeLast(10)
+    final recentMessages = conversation.messages.length > 10
+        ? conversation.messages.sublist(conversation.messages.length - 10)
+        : conversation.messages;
+    final conversationHistory = recentMessages
         .map((m) => '${m.type == MessageType.sent ? "나" : profile.name}: ${m.content}')
         .join('\n');
 
