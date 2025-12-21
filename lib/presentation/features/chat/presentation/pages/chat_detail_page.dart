@@ -79,6 +79,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
           ref.read(chatDetailProvider(widget.conversationId).notifier).refresh();
         },
         message: state.error,
+        message: state.error,
       );
     }
 
