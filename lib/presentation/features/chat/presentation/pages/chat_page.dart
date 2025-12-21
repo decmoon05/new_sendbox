@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/chat_provider.dart';
+import '../providers/chat_search_provider.dart';
 import '../../../../../domain/entities/conversation.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/datetime_extensions.dart';
@@ -29,7 +30,9 @@ class ChatPage extends ConsumerWidget {
       ),
       body: RefreshIndicator(
         onRefresh: () => ref.read(chatProvider.notifier).refresh(),
-        child: _buildBody(context, chatState),
+        child: searchState.query.isNotEmpty
+            ? _buildSearchResults(context, searchState)
+            : _buildBody(context, chatState),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
