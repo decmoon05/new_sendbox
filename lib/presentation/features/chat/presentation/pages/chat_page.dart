@@ -11,6 +11,8 @@ import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/datetime_extensions.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../routes/route_names.dart';
+import '../../../shared/widgets/error_widget.dart';
+import '../../../shared/widgets/skeleton_loader.dart';
 
 /// 채팅 목록 페이지
 class ChatPage extends ConsumerWidget {
@@ -77,8 +79,8 @@ class ChatPage extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () => ref.read(chatProvider.notifier).refresh(),
         child: searchState.query.isNotEmpty
-            ? _buildSearchResults(context, searchState)
-            : _buildBody(context, chatState.copyWith(conversations: sortedConversations)),
+            ? _buildSearchResults(context, searchState, ref)
+            : _buildBody(context, chatState.copyWith(conversations: sortedConversations), ref),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -89,7 +91,7 @@ class ChatPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildBody(BuildContext context, ChatState state) {
+  Widget _buildBody(BuildContext context, ChatState state, WidgetRef ref) {
     if (state.isLoading && state.conversations.isEmpty) {
       return const ConversationListSkeleton();
     }
