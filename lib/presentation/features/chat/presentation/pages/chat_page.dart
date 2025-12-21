@@ -11,8 +11,8 @@ import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/datetime_extensions.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../routes/route_names.dart';
-import '../../../shared/widgets/error_widget.dart';
-import '../../../shared/widgets/skeleton_loader.dart';
+import '../../../../../presentation/shared/widgets/error_widget.dart';
+import '../../../../../presentation/shared/widgets/skeleton_loader.dart';
 
 /// 채팅 목록 페이지
 class ChatPage extends ConsumerWidget {
