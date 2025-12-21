@@ -445,7 +445,7 @@ class _ConversationListItem extends StatelessWidget {
     );
   }
 
-  String _getPlatformName(String platform) {
+  static String _getPlatformNameStatic(String platform) {
     switch (platform.toLowerCase()) {
       case 'sms':
         return 'SMS';
