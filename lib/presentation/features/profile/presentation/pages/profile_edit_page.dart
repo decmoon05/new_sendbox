@@ -152,7 +152,9 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
         ],
       ),
       body: profileAsync.when(
-        data: (profile) => _buildEditForm(context, profile),
+          data: (profile) => profile != null 
+              ? _buildEditForm(context, profile)
+              : const Center(child: Text('프로필을 찾을 수 없습니다')),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(
           child: Column(

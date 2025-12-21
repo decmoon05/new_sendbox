@@ -10,7 +10,7 @@ class SettingsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settingsState = ref.watch(settingsProvider);
+      // Settings는 SettingsService를 통해 직접 접근
     
     return Scaffold(
       appBar: AppBar(
@@ -49,7 +49,7 @@ class SettingsPage extends ConsumerWidget {
             subtitle: '새 메시지 알림 받기',
             value: settingsState.notificationsEnabled,
             onChanged: (value) {
-              ref.read(settingsProvider.notifier).setNotificationsEnabled(value);
+                SettingsService.setNotificationsEnabled(value);
             },
           ),
           _buildSwitchTile(
@@ -59,7 +59,7 @@ class SettingsPage extends ConsumerWidget {
             subtitle: '알림 시 진동',
             value: settingsState.vibrationEnabled,
             onChanged: (value) {
-              ref.read(settingsProvider.notifier).setVibrationEnabled(value);
+                SettingsService.setVibrationEnabled(value);
             },
           ),
           const Divider(),
@@ -73,7 +73,7 @@ class SettingsPage extends ConsumerWidget {
             subtitle: '메시지 추천 기능 사용',
             value: settingsState.aiRecommendationsEnabled,
             onChanged: (value) {
-              ref.read(settingsProvider.notifier).setAiRecommendationsEnabled(value);
+                SettingsService.setAiRecommendationsEnabled(value);
             },
           ),
           _buildSwitchTile(
@@ -83,7 +83,7 @@ class SettingsPage extends ConsumerWidget {
             subtitle: '클라우드와 자동 동기화',
             value: settingsState.autoSyncEnabled,
             onChanged: (value) {
-              ref.read(settingsProvider.notifier).setAutoSyncEnabled(value);
+                SettingsService.setAutoSyncEnabled(value);
             },
           ),
           _buildListTile(
