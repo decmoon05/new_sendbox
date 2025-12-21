@@ -22,6 +22,9 @@ class SyncStatusModel {
   @Index()
   late DateTime createdAt;
 
+  /// 기본 생성자 (Isar 필수)
+  SyncStatusModel();
+
   /// Entity로 변환
   SyncStatus toEntity() {
     return SyncStatus(

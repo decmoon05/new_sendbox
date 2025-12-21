@@ -31,6 +31,9 @@ class ContactProfileModel {
 
   late DateTime updatedAt;
 
+  /// 기본 생성자 (Isar 필수)
+  ContactProfileModel();
+
   /// Entity로 변환
   ContactProfile toEntity() {
     return ContactProfile(

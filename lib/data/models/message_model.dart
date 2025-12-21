@@ -29,6 +29,9 @@ class MessageModel {
 
   late String? metadataJson;
 
+  /// 기본 생성자 (Isar 필수)
+  MessageModel();
+
   /// Entity로 변환
   Message toEntity() {
     return Message(

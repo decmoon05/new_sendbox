@@ -26,6 +26,9 @@ class ConversationModel {
 
   late DateTime updatedAt;
 
+  /// 기본 생성자 (Isar 필수)
+  ConversationModel();
+
   // Messages는 별도 컬렉션으로 관리 (IsarLinks 대신 수동 참조)
   // 실제로는 messageId 리스트를 저장하고 쿼리로 가져옴
 

@@ -27,6 +27,9 @@ class AIRecommendationModel {
   late bool isUsed;
   late String? selectedOptionId;
 
+  /// 기본 생성자 (Isar 필수)
+  AIRecommendationModel();
+
   /// Entity로 변환
   AIRecommendation toEntity() {
     return AIRecommendation(

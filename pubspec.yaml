@@ -39,7 +39,7 @@ dependencies:
 
   # 유틸리티
   uuid: ^4.3.0
-  intl: ^0.19.0
+  intl: ^0.20.2
   shared_preferences: ^2.2.2
   path_provider: ^2.1.2
   path: ^1.9.0

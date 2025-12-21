@@ -21,21 +21,19 @@ class IsarStorage {
 
     try {
       final dir = await getApplicationDocumentsDirectory();
-      // TODO: Isar 코드 생성 후 스키마 추가
-      // 일단 빈 리스트로 초기화 (build_runner 실행 후 수정 필요)
       _isar = await Isar.open(
         [
-          // ConversationModelSchema,
-          // MessageModelSchema,
-          // ContactProfileModelSchema,
-          // AIRecommendationModelSchema,
-          // SyncStatusModelSchema,
+          ConversationModelSchema,
+          MessageModelSchema,
+          ContactProfileModelSchema,
+          AIRecommendationModelSchema,
+          SyncStatusModelSchema,
         ],
         directory: dir.path,
         name: AppConstants.localDatabaseName.replaceAll('.db', ''),
       );
       
-      debugPrint('Isar 데이터베이스 초기화 완료 (스키마는 build_runner 실행 후 추가 필요)');
+      debugPrint('Isar 데이터베이스 초기화 완료');
 
       return _isar!;
     } catch (e) {
