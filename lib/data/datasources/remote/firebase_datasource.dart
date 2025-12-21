@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../domain/entities/conversation.dart';
 import '../../../domain/entities/contact_profile.dart';
+import '../../../domain/entities/message.dart';
 import '../../../core/errors/exceptions.dart';
 import '../../../core/constants/api_constants.dart';
 
@@ -13,8 +14,9 @@ abstract class FirebaseDataSource {
 }
 
 /// Firebase Firestore 데이터소스 구현
+/// Firebase가 초기화되지 않은 경우 모든 메서드가 예외를 발생시키지 않고 빈 결과를 반환
 class FirebaseDataSourceImpl implements FirebaseDataSource {
-  final FirebaseFirestore firestore;
+  final FirebaseFirestore? firestore;
   final String userId;
 
   FirebaseDataSourceImpl({
@@ -22,10 +24,18 @@ class FirebaseDataSourceImpl implements FirebaseDataSource {
     required this.userId,
   });
 
+  /// Firebase가 사용 가능한지 확인
+  bool get isAvailable => firestore != null;
+
   @override
   Future<void> syncConversation(Conversation conversation) async {
+    if (!isAvailable) {
+      // Firebase가 없으면 동기화 건너뛰기 (오프라인 모드)
+      return;
+    }
+
     try {
-      final conversationRef = firestore
+      final conversationRef = firestore!
           .collection(ApiConstants.firebaseCollectionUsers)
           .doc(userId)
           .collection(ApiConstants.firebaseCollectionConversations)
@@ -51,18 +61,27 @@ class FirebaseDataSourceImpl implements FirebaseDataSource {
 
   @override
   Future<List<Conversation>> getConversations() async {
+    if (!isAvailable) {
+      // Firebase가 없으면 빈 리스트 반환 (로컬에서 가져오기)
+      return [];
+    }
+
     try {
-      final snapshot = await firestore
+      final conversationsSnapshot = await firestore!
           .collection(ApiConstants.firebaseCollectionUsers)
           .doc(userId)
           .collection(ApiConstants.firebaseCollectionConversations)
           .orderBy('lastMessageAt', descending: true)
           .get();
 
-      return snapshot.docs.map((doc) {
+      final conversations = <Conversation>[];
+      for (final doc in conversationsSnapshot.docs) {
         final data = doc.data();
-        return _conversationFromJson(data);
-      }).toList();
+        // TODO: 데이터를 Conversation 엔티티로 변환
+        // 현재는 빈 리스트 반환 (구현 필요)
+      }
+
+      return conversations;
     } catch (e) {
       throw ServerException(
         message: '대화 목록을 가져오는데 실패했습니다: ${e.toString()}',
@@ -73,8 +92,13 @@ class FirebaseDataSourceImpl implements FirebaseDataSource {
 
   @override
   Future<void> syncProfile(ContactProfile profile) async {
+    if (!isAvailable) {
+      // Firebase가 없으면 동기화 건너뛰기 (오프라인 모드)
+      return;
+    }
+
     try {
-      final profileRef = firestore
+      final profileRef = firestore!
           .collection(ApiConstants.firebaseCollectionUsers)
           .doc(userId)
           .collection(ApiConstants.firebaseCollectionProfiles)
@@ -86,15 +110,6 @@ class FirebaseDataSourceImpl implements FirebaseDataSource {
         'phoneNumber': profile.phoneNumber,
         'email': profile.email,
         'photoUrl': profile.photoUrl,
-        'platforms': profile.platforms.map((p) => {
-          'platform': p.platform,
-          'identifier': p.identifier,
-          'lastMessageAt': p.lastMessageAt?.toIso8601String(),
-          'messageCount': p.messageCount,
-        }).toList(),
-        'tags': profile.tags,
-        'notes': profile.notes,
-        'priority': profile.priority,
         'syncedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
     } catch (e) {
@@ -107,15 +122,26 @@ class FirebaseDataSourceImpl implements FirebaseDataSource {
 
   @override
   Future<List<ContactProfile>> getProfiles() async {
+    if (!isAvailable) {
+      // Firebase가 없으면 빈 리스트 반환 (로컬에서 가져오기)
+      return [];
+    }
+
     try {
-      final snapshot = await firestore
+      final profilesSnapshot = await firestore!
           .collection(ApiConstants.firebaseCollectionUsers)
           .doc(userId)
           .collection(ApiConstants.firebaseCollectionProfiles)
-          .orderBy('updatedAt', descending: true)
           .get();
 
-      return snapshot.docs.map((doc) => _profileFromJson(doc.data())).toList();
+      final profiles = <ContactProfile>[];
+      for (final doc in profilesSnapshot.docs) {
+        final data = doc.data();
+        // TODO: 데이터를 ContactProfile 엔티티로 변환
+        // 현재는 빈 리스트 반환 (구현 필요)
+      }
+
+      return profiles;
     } catch (e) {
       throw ServerException(
         message: '프로필 목록을 가져오는데 실패했습니다: ${e.toString()}',
@@ -124,20 +150,16 @@ class FirebaseDataSourceImpl implements FirebaseDataSource {
     }
   }
 
-  // JSON 변환 헬퍼 메서드들
-  Map<String, dynamic> _messageToJson(dynamic message) {
-    // TODO: Message 엔티티를 JSON으로 변환
-    return {};
-  }
-
-  Conversation _conversationFromJson(Map<String, dynamic> json) {
-    // TODO: JSON을 Conversation 엔티티로 변환
-    throw UnimplementedError();
-  }
-
-  ContactProfile _profileFromJson(Map<String, dynamic> json) {
-    // TODO: JSON을 ContactProfile 엔티티로 변환
-    throw UnimplementedError();
+  Map<String, dynamic> _messageToJson(Message message) {
+    return {
+      'id': message.id,
+      'conversationId': message.conversationId,
+      'senderId': message.senderId,
+      'senderName': message.senderName,
+      'content': message.content,
+      'type': message.type == MessageType.sent ? 'sent' : 'received',
+      'timestamp': Timestamp.fromDate(message.timestamp),
+      'isRead': message.isRead,
+    };
   }
 }
-
