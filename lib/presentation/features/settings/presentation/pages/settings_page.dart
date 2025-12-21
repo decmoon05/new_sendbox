@@ -49,7 +49,7 @@ class SettingsPage extends ConsumerWidget {
             icon: Icons.notifications_outlined,
             title: '푸시 알림',
             subtitle: '새 메시지 알림 받기',
-            value: settingsState.notificationsEnabled,
+            value: SettingsService.notificationsEnabled,
             onChanged: (value) {
                 SettingsService.setNotificationsEnabled(value);
             },
@@ -59,7 +59,7 @@ class SettingsPage extends ConsumerWidget {
             icon: Icons.vibration,
             title: '진동',
             subtitle: '알림 시 진동',
-            value: settingsState.vibrationEnabled,
+            value: SettingsService.vibrationEnabled,
             onChanged: (value) {
                 SettingsService.setVibrationEnabled(value);
             },
@@ -73,7 +73,7 @@ class SettingsPage extends ConsumerWidget {
             icon: Icons.auto_awesome,
             title: 'AI 추천 활성화',
             subtitle: '메시지 추천 기능 사용',
-            value: settingsState.aiRecommendationsEnabled,
+            value: SettingsService.aiRecommendationsEnabled,
             onChanged: (value) {
                 SettingsService.setAiRecommendationsEnabled(value);
             },
@@ -83,14 +83,14 @@ class SettingsPage extends ConsumerWidget {
             icon: Icons.sync,
             title: '자동 동기화',
             subtitle: '클라우드와 자동 동기화',
-            value: settingsState.autoSyncEnabled,
+            value: SettingsService.autoSyncEnabled,
             onChanged: (value) {
                 SettingsService.setAutoSyncEnabled(value);
             },
           ),
           _buildListTile(
             context: context,
-            icon: Icons.platforms,
+            icon: Icons.extension,
             title: '플랫폼 통합',
             subtitle: '연결된 메신저 플랫폼 관리',
             onTap: () {
