@@ -15,6 +15,7 @@ class RouteNames {
   // 프로필
   static const String profiles = '/profiles';
   static const String profileDetail = '/profiles/:id';
+  static const String profileEdit = '/profiles/:id/edit';
 
   // 설정
   static const String settings = '/settings';
