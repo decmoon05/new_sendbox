@@ -144,5 +144,10 @@ final geminiServiceProvider = Provider<GeminiService>((ref) {
 /// AI 리포지토리 Provider
 final aiRepositoryProvider = Provider<AIRepository>((ref) {
   final geminiService = ref.watch(geminiServiceProvider);
+  // geminiService가 null일 수 있으므로 null 체크
+  if (geminiService == null) {
+    // API 키가 없으면 기본 구현체 반환 (에러 처리 포함)
+    return AIRepositoryImpl(geminiService: null);
+  }
   return AIRepositoryImpl(geminiService: geminiService);
 });

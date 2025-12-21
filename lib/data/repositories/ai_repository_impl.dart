@@ -10,10 +10,10 @@ import '../services/ai/gemini_service.dart';
 
 /// AI 리포지토리 구현
 class AIRepositoryImpl implements AIRepository {
-  final GeminiService geminiService;
+  final GeminiService? geminiService;
 
   AIRepositoryImpl({
-    required this.geminiService,
+    this.geminiService,
   });
 
   @override
@@ -23,6 +23,12 @@ class AIRepositoryImpl implements AIRepository {
     required String messageContext,
   }) async {
     try {
+      if (geminiService == null) {
+        return const Left(ServerFailure(
+          'Gemini API 키가 설정되지 않았습니다. 환경 변수 GEMINI_API_KEY를 설정해주세요.',
+        ));
+      }
+
       final recommendation = await geminiService.getMessageRecommendation(
         conversation: conversation,
         profile: profile,

@@ -10,7 +10,7 @@ class ApiConstants {
   
   // Google Gemini API
   static const String geminiBaseUrl = 'https://generativelanguage.googleapis.com/v1beta';
-  static const String geminiModel = 'gemini-pro';
+  static const String geminiModel = 'gemini-1.5-flash'; // 최신 모델로 업데이트
   
   // 자체 백엔드 API (향후 확장용)
   static const String apiBaseUrlDev = 'https://api-dev.sendbox.app/v1';

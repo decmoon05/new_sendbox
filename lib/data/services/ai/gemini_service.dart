@@ -77,31 +77,32 @@ class GeminiService {
         .map((m) => '${m.type == MessageType.sent ? "나" : profile.name}: ${m.content}')
         .join('\n');
 
-    return '''
-You are an AI assistant helping users write personalized messages in Korean.
+    return '''You are an AI assistant helping users write personalized messages in Korean.
 
 Context:
 - Contact Name: ${profile.name}
 - Relationship: ${profile.aiAnalysis?.relationship ?? "unknown"}
-- Conversation History:
+- Communication Style: ${profile.aiAnalysis?.communicationStyle ?? "normal"}
+- Conversation History (최근 메시지):
 $conversationHistory
-- Message Context: $messageContext
+- Message Context (사용자가 입력한 내용 또는 상황): $messageContext
 
-Task: Generate 3-5 message recommendations that are:
-- Appropriate for the relationship
-- Match the conversation tone
+Task: Generate 3-5 message recommendations in Korean that are:
+- Appropriate for the relationship and communication style
+- Match the conversation tone naturally
 - Natural and authentic in Korean
 - Respectful and considerate
+- Contextually relevant
 
-Return the recommendations as a JSON array:
+Important: Return ONLY a valid JSON array, no additional text or explanation.
+Format:
 [
   {
-    "message": "message text in Korean",
+    "message": "한국어 메시지 내용",
     "tone": "formal|casual|friendly",
-    "reason": "brief explanation"
+    "reason": "이 메시지를 추천하는 이유"
   }
-]
-''';
+]''';
   }
 
   /// 응답 파싱
