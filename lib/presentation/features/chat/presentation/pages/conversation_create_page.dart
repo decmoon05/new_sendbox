@@ -8,6 +8,7 @@ import '../../../../../domain/entities/contact_profile.dart';
 import '../../../../../domain/repositories/conversation_repository.dart';
 import '../../../../../domain/repositories/profile_repository.dart';
 import '../../../../../core/di/providers.dart';
+import '../providers/chat_provider.dart';
 import '../../../../routes/route_names.dart';
 
 /// 새 대화 시작 페이지
