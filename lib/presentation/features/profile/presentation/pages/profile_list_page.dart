@@ -90,7 +90,7 @@ class ProfileListPage extends ConsumerWidget {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                // TODO: 재시도 로직
+                ref.read(profileListProvider.notifier).loadProfiles();
               },
               child: const Text('다시 시도'),
             ),

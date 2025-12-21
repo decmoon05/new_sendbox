@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/di/providers.dart';
 
 /// 설정 페이지
 class SettingsPage extends ConsumerWidget {
@@ -257,7 +259,7 @@ class SettingsPage extends ConsumerWidget {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                // TODO: 캐시 정리 로직 구현
+                _clearCache(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('캐시가 정리되었습니다')),
                 );
@@ -285,7 +287,7 @@ class SettingsPage extends ConsumerWidget {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                // TODO: 로그아웃 로직 구현
+                _logout(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('로그아웃되었습니다')),
                 );
@@ -296,5 +298,129 @@ class SettingsPage extends ConsumerWidget {
         );
       },
     );
+  }
+
+  /// 캐시 정리
+  Future<void> _clearCache(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('캐시 정리'),
+        content: const Text('캐시를 정리하시겠습니까?\n\n이 작업은 일시적으로 앱 속도를 느리게 만들 수 있습니다.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('취소'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('정리'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    try {
+      // SharedPreferences 캐시 정리 (설정 제외)
+      final prefs = await SharedPreferences.getInstance();
+      final keys = prefs.getKeys();
+      final settingsKeys = [
+        'user_preferences',
+        'language',
+        'theme',
+        'notifications_enabled',
+        'vibration_enabled',
+        'ai_recommendation_enabled',
+        'offline_mode_enabled',
+        'auto_sync_enabled',
+      ];
+
+      int clearedCount = 0;
+      for (final key in keys) {
+        if (!settingsKeys.contains(key)) {
+          await prefs.remove(key);
+          clearedCount++;
+        }
+      }
+
+      // 이미지 캐시 정리 (Flutter에서 기본 제공하는 캐시는 자동 관리됨)
+      // 필요시 추가 구현
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('캐시가 정리되었습니다. ($clearedCount개 항목)')),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('캐시 정리 실패: $e')),
+        );
+      }
+    }
+  }
+
+  /// 로그아웃
+  Future<void> _logout(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('로그아웃'),
+        content: const Text('정말 로그아웃하시겠습니까?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('취소'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.error,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('로그아웃'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    try {
+      // Firebase 로그아웃 (있는 경우)
+      final firebaseAuth = ref.read(firebaseAuthProvider);
+      if (firebaseAuth != null && firebaseAuth.currentUser != null) {
+        await firebaseAuth.signOut();
+      }
+
+      // 로컬 토큰 삭제
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('auth_token');
+      await prefs.remove('refresh_token');
+      await prefs.remove('user_id');
+
+      // 설정 초기화 (선택사항)
+      // await ref.read(settingsServiceProvider).clearAllSettings();
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('로그아웃되었습니다')),
+        );
+        
+        // 로그인 화면으로 이동
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          '/login',
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('로그아웃 실패: $e')),
+        );
+      }
+    }
   }
 }
