@@ -18,6 +18,8 @@ import '../../data/services/ai/gemini_service.dart';
 import '../../data/services/platform/sms/sms_service.dart';
 import '../../data/services/platform/sms/sms_platform_adapter.dart';
 import '../../data/services/platform/sms/sms_listener_service.dart';
+import '../../data/services/platform/kakao/kakao_platform_adapter.dart';
+import '../../data/services/platform/kakao/kakao_listener_service.dart';
 import '../../core/utils/sms_sync_service.dart';
 import '../../data/repositories/ai_repository_impl.dart';
 import '../../domain/repositories/conversation_repository.dart';

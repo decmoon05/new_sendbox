@@ -91,6 +91,20 @@ void _syncExistingSms(ProviderContainer container) {
   });
 }
 
+/// 카카오톡 리스너 시작
+void _startKakaoListener(ProviderContainer container) {
+  // 비동기로 실행하되 앱 시작을 막지 않음
+  Future.microtask(() async {
+    try {
+      final kakaoListenerService = container.read(kakaoListenerServiceProvider);
+      await kakaoListenerService.startListening();
+      debugPrint('카카오톡 리스너 시작 완료');
+    } catch (e) {
+      debugPrint('카카오톡 리스너 시작 실패: $e');
+    }
+  });
+}
+
 class SendBoxApp extends StatelessWidget {
   const SendBoxApp({super.key});
 
