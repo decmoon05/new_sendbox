@@ -15,11 +15,17 @@ import '../../../../../presentation/shared/widgets/error_widget.dart';
 import '../../../../../presentation/shared/widgets/skeleton_loader.dart';
 
 /// 채팅 목록 페이지
-class ChatPage extends ConsumerWidget {
+class ChatPage extends ConsumerStatefulWidget {
   const ChatPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ChatPage> createState() => _ChatPageState();
+}
+
+class _ChatPageState extends ConsumerState<ChatPage> {
+  @override
+  Widget build(BuildContext context) {
+    final ref = this.ref;
     final chatState = ref.watch(chatProvider);
     final searchState = ref.watch(chatSearchProvider);
     final filterState = ref.watch(chatFilterProvider);
@@ -78,8 +84,8 @@ class ChatPage extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () => ref.read(chatProvider.notifier).refresh(),
         child: searchState.query.isNotEmpty
-            ? ChatPage._buildSearchResults(context, searchState, ref)
-            : ChatPage._buildBody(context, chatState.copyWith(conversations: sortedConversations), ref),
+            ? _buildSearchResults(context, searchState)
+            : _buildBody(context, chatState.copyWith(conversations: sortedConversations)),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -90,7 +96,7 @@ class ChatPage extends ConsumerWidget {
     );
   }
 
-  static Widget _buildBody(BuildContext context, ChatState state, WidgetRef ref) {
+  Widget _buildBody(BuildContext context, ChatState state) {
     if (state.isLoading && state.conversations.isEmpty) {
       return const ConversationListSkeleton();
     }
@@ -226,7 +232,7 @@ class _ConversationListItem extends StatelessWidget {
     );
   }
 
-  static Widget _buildSearchResults(BuildContext context, ChatSearchState searchState, WidgetRef ref) {
+  Widget _buildSearchResults(BuildContext context, ChatSearchState searchState) {
     if (searchState.isSearching) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -294,7 +300,7 @@ class _ConversationListItem extends StatelessWidget {
     );
   }
 
-  static void _showFilterBottomSheet(BuildContext context, WidgetRef ref) {
+  void _showFilterBottomSheet(BuildContext context) {
     final filterState = ref.read(chatFilterProvider);
     final filterNotifier = ref.read(chatFilterProvider.notifier);
 
@@ -364,7 +370,7 @@ class _ConversationListItem extends StatelessWidget {
                       ),
                       ...platforms.map((platform) {
                         return ChoiceChip(
-                          label: Text(ChatPage._getPlatformNameStatic(platform)),
+                          label: Text(_getPlatformName(platform)),
                           selected: selectedPlatform == platform,
                           onSelected: (selected) {
                             setState(() {
@@ -445,7 +451,7 @@ class _ConversationListItem extends StatelessWidget {
     );
   }
 
-  static String _getPlatformNameStatic(String platform) {
+  String _getPlatformName(String platform) {
     switch (platform.toLowerCase()) {
       case 'sms':
         return 'SMS';
@@ -569,7 +575,7 @@ class _ConversationListItem extends StatelessWidget {
     });
   }
 
-  static void _showSortBottomSheet(BuildContext context, WidgetRef ref) {
+  void _showSortBottomSheet(BuildContext context) {
     final sortState = ref.read(chatSortProvider);
     final sortNotifier = ref.read(chatSortProvider.notifier);
 
