@@ -1,10 +1,11 @@
 import 'package:flutter/foundation.dart';
 import '../../../domain/entities/conversation.dart';
 import '../../../domain/entities/message.dart';
+import '../../../domain/entities/contact_profile.dart';
 import '../../../domain/repositories/conversation_repository.dart';
 import '../../../domain/repositories/profile_repository.dart';
-import '../../data/services/platform/sms/sms_service.dart';
-import '../../data/services/platform/sms/sms_platform_adapter.dart';
+import '../../../data/services/platform/sms/sms_service.dart';
+import '../../../data/services/platform/sms/sms_platform_adapter.dart';
 
 /// SMS 동기화 서비스
 /// 기존 SMS 메시지를 앱의 Conversation으로 가져옴
