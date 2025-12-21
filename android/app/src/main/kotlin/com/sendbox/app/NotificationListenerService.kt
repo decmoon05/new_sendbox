@@ -1,23 +1,25 @@
 package com.sendbox.app
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
-import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.embedding.engine.dart.DartExecutor
-import io.flutter.plugin.common.EventChannel
 
 /**
  * Notification Listener Service
- * 모든 앱의 알림을 감지하고 카카오톡 알림을 필터링하여 Flutter로 전달
+ * 모든 앱의 알림을 감지하고 카카오톡 알림을 필터링하여 Broadcast로 전달
  */
 class SendBoxNotificationListenerService : NotificationListenerService() {
-    private var eventChannel: EventChannel? = null
-    private var flutterEngine: FlutterEngine? = null
     
     companion object {
         private const val TAG = "NotificationListener"
-        private const val EVENT_CHANNEL_NAME = "com.sendbox.app/kakao_notifications"
+        const val ACTION_NOTIFICATION_RECEIVED = "com.sendbox.app.NOTIFICATION_RECEIVED"
+        const val EXTRA_PACKAGE_NAME = "packageName"
+        const val EXTRA_TITLE = "title"
+        const val EXTRA_BODY = "body"
+        const val EXTRA_TIMESTAMP = "timestamp"
     }
 
     override fun onCreate() {
@@ -28,18 +30,6 @@ class SendBoxNotificationListenerService : NotificationListenerService() {
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "Notification Listener Service 종료")
-    }
-
-    /**
-     * Flutter Engine 연결
-     */
-    fun setFlutterEngine(engine: FlutterEngine) {
-        flutterEngine = engine
-        eventChannel = EventChannel(
-            engine.dartExecutor.binaryMessenger,
-            EVENT_CHANNEL_NAME
-        )
-        Log.d(TAG, "Flutter Engine 연결됨")
     }
 
     override fun onNotificationPosted(notification: StatusBarNotification?) {
@@ -73,34 +63,16 @@ class SendBoxNotificationListenerService : NotificationListenerService() {
                 return
             }
 
-            // Flutter로 전달할 데이터 생성
-            val data = mapOf(
-                "packageName" to packageName,
-                "title" to title,
-                "body" to messageBody,
-                "timestamp" to System.currentTimeMillis()
-            )
-
-            // EventChannel로 데이터 전송 (비동기)
-            flutterEngine?.dartExecutor?.executeDartCallback {
-                eventChannel?.setStreamHandler(object : EventChannel.StreamHandler {
-                    override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
-                        // 스트림 핸들러는 이미 설정되어 있을 것이므로, 직접 데이터를 보낼 수 없음
-                        // 대신 EventSink를 저장하고 여기서 사용해야 하지만,
-                        // 현재 구조에서는 각 알림마다 새로운 데이터를 보낼 방법이 필요함
-                        // 이 부분은 MainActivity에서 EventChannel을 관리하는 방식으로 변경 필요
-                    }
-
-                    override fun onCancel(arguments: Any?) {
-                        // 취소 처리
-                    }
-                })
+            // Broadcast로 데이터 전송 (MainActivity에서 수신)
+            val intent = Intent(ACTION_NOTIFICATION_RECEIVED).apply {
+                putExtra(EXTRA_PACKAGE_NAME, packageName)
+                putExtra(EXTRA_TITLE, title)
+                putExtra(EXTRA_BODY, messageBody)
+                putExtra(EXTRA_TIMESTAMP, System.currentTimeMillis())
             }
-
-            Log.d(TAG, "카카오톡 알림 데이터 준비 완료: $data")
+            sendBroadcast(intent)
             
-            // 실제로는 MainActivity를 통해 데이터를 전송해야 함
-            // 이 구조는 리팩토링이 필요함
+            Log.d(TAG, "카카오톡 알림 Broadcast 전송 완료")
             
         } catch (e: Exception) {
             Log.e(TAG, "알림 처리 중 오류 발생", e)
@@ -112,4 +84,3 @@ class SendBoxNotificationListenerService : NotificationListenerService() {
         // 알림 제거 시 처리 (필요시 구현)
     }
 }
-
