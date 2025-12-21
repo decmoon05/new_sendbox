@@ -33,10 +33,13 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: 실제 데이터 로드 (현재는 임시 데이터)
+    final chatDetailState = ref.watch(chatDetailProvider(widget.conversationId));
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('대화'),
+        title: Text(
+          chatDetailState.conversation?.contactId ?? '대화',
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.info_outline),
@@ -49,27 +52,65 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
       body: Column(
         children: [
           Expanded(
-            child: _buildMessageList(context),
+            child: _buildMessageList(context, chatDetailState),
           ),
-          _buildMessageInput(context),
+          _buildMessageInput(context, chatDetailState),
         ],
       ),
     );
   }
 
-  Widget _buildMessageList(BuildContext context) {
-    // TODO: 실제 메시지 목록 로드
+  Widget _buildMessageList(BuildContext context, ChatDetailState state) {
+    if (state.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (state.error != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 64, color: AppColors.error),
+            const SizedBox(height: 16),
+            Text(state.error!),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => ref.read(chatDetailProvider(widget.conversationId).notifier).refresh(),
+              child: const Text('다시 시도'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final conversation = state.conversation;
+    if (conversation == null || conversation.messages.isEmpty) {
+      return const Center(
+        child: Text('메시지가 없습니다'),
+      );
+    }
+
+    // 스크롤을 맨 아래로 (메시지 로드 후)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      }
+    });
+
     return ListView.builder(
       controller: _scrollController,
       padding: const EdgeInsets.all(16),
-      itemCount: 0, // 임시
+      itemCount: conversation.messages.length,
       itemBuilder: (context, index) {
-        return const SizedBox.shrink();
+        final message = conversation.messages[index];
+        // TODO: 실제 사용자 ID로 교체
+        final isMe = message.type == MessageType.sent;
+        return MessageBubble(message: message, isMe: isMe);
       },
     );
   }
 
-  Widget _buildMessageInput(BuildContext context) {
+  Widget _buildMessageInput(BuildContext context, ChatDetailState state) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -107,13 +148,13 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                 ),
                 maxLines: null,
                 textInputAction: TextInputAction.send,
-                onSubmitted: (_) => _sendMessage(context),
+                onSubmitted: (_) => _sendMessage(context, state),
               ),
             ),
             const SizedBox(width: 8),
             IconButton(
               icon: const Icon(Icons.send),
-              onPressed: () => _sendMessage(context),
+              onPressed: () => _sendMessage(context, state),
             ),
           ],
         ),
@@ -121,11 +162,13 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
     );
   }
 
-  void _sendMessage(BuildContext context) {
+  void _sendMessage(BuildContext context, ChatDetailState state) {
     final text = _messageController.text.trim();
     if (text.isEmpty) return;
 
-    // TODO: 실제 메시지 전송 로직
+    // 메시지 전송
+    ref.read(chatDetailProvider(widget.conversationId).notifier).sendMessage(text);
+    
     _messageController.clear();
     context.hideKeyboard();
 
@@ -142,24 +185,48 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
   }
 
   void _showAIRecommendation(BuildContext context) {
-    // TODO: 실제 conversation과 profile 가져오기
-    // 현재는 임시로 빈 데이터 사용
-    showModalBottomSheet(
+    final conversation = ref.read(chatDetailProvider(widget.conversationId)).conversation;
+    if (conversation == null) {
+      context.showSnackBar('대화 정보를 불러올 수 없습니다');
+      return;
+    }
+
+    // 프로필 가져오기
+    final profileRepository = ref.read(profileRepositoryProvider);
+    profileRepository.getProfile(conversation.contactId).then((result) {
+      result.fold(
+        (failure) {
+          context.showSnackBar('프로필을 불러올 수 없습니다: ${failure.message}');
+        },
+        (profile) {
+          _showAIRecommendationModal(context, conversation, profile);
+        },
+      );
+    });
+  }
+
+  void _showAIRecommendationModal(
+    BuildContext context,
+    Conversation conversation,
+    ContactProfile profile,
+  ) {
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
-        // TODO: 실제 conversation과 profile로 교체
-        // final conversation = ...;
-        // final profile = ...;
-        // final params = AIRecommendationParams(
-        //   conversation: conversation,
-        //   profile: profile,
-        //   messageContext: _messageController.text.trim(),
-        // );
-        // final recommendationState = ref.watch(aiRecommendationProvider(params));
+        final messageContext = _messageController.text.trim().isNotEmpty
+            ? _messageController.text.trim()
+            : '대화를 계속하겠습니다';
+
+        final params = AIRecommendationParams(
+          conversation: conversation,
+          profile: profile,
+          messageContext: messageContext,
+        );
+
+        final recommendationState = ref.watch(aiRecommendationProvider(params));
 
         return DraggableScrollableSheet(
           initialChildSize: 0.5,
@@ -197,41 +264,58 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                   ),
                 ),
                 Expanded(
-                  child: ListView(
-                    controller: scrollController,
-                    padding: const EdgeInsets.all(16),
-                    children: [
-                      // TODO: 실제 AI 추천 데이터 표시
-                      // Consumer(
-                      //   builder: (context, ref, child) {
-                      //     final state = recommendationState;
-                      //     if (state.isLoading) {
-                      //       return const Center(child: CircularProgressIndicator());
-                      //     }
-                      //     if (state.error != null) {
-                      //       return Text('오류: ${state.error}');
-                      //     }
-                      //     if (state.recommendation == null) {
-                      //       return const Text('추천 메시지가 없습니다');
-                      //     }
-                      //     return Column(
-                      //       children: state.recommendation!.recommendations.map((option) {
-                      //         return AIRecommendationCard(
-                      //           option: option,
-                      //           onCopy: () {
-                      //             // 클립보드에 복사
-                      //             Clipboard.setData(ClipboardData(text: option.message));
-                      //             ScaffoldMessenger.of(context).showSnackBar(
-                      //               const SnackBar(content: Text('메시지가 복사되었습니다')),
-                      //             );
-                      //           },
-                      //         );
-                      //       }).toList(),
-                      //     );
-                      //   },
-                      // ),
-                      const Text('AI 추천 기능은 실제 데이터 연동 후 활성화됩니다'),
-                    ],
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      final state = recommendationState;
+                      
+                      if (state.isLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      
+                      if (state.error != null) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.error_outline, size: 48, color: AppColors.error),
+                              const SizedBox(height: 16),
+                              Text(state.error!),
+                              const SizedBox(height: 16),
+                              ElevatedButton(
+                                onPressed: () {
+                                  ref.read(aiRecommendationProvider(params).notifier).refresh();
+                                },
+                                child: const Text('다시 시도'),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      
+                      if (state.recommendation == null || state.recommendation!.recommendations.isEmpty) {
+                        return const Center(
+                          child: Text('추천 메시지가 없습니다'),
+                        );
+                      }
+                      
+                      return ListView(
+                        controller: scrollController,
+                        padding: const EdgeInsets.all(16),
+                        children: state.recommendation!.recommendations.map((option) {
+                          return AIRecommendationCard(
+                            option: option,
+                            onTap: () {
+                              _messageController.text = option.message;
+                              Navigator.pop(context);
+                            },
+                            onCopy: () {
+                              // TODO: 클립보드 복사 구현
+                              context.showSnackBar('메시지가 복사되었습니다');
+                            },
+                          );
+                        }).toList(),
+                      );
+                    },
                   ),
                 ),
               ],
