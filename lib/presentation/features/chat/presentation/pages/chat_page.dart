@@ -91,9 +91,7 @@ class ChatPage extends ConsumerWidget {
 
   Widget _buildBody(BuildContext context, ChatState state) {
     if (state.isLoading && state.conversations.isEmpty) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const ConversationListSkeleton();
     }
 
     if (state.error != null) {

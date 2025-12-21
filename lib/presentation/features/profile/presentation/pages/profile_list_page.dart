@@ -66,9 +66,7 @@ class ProfileListPage extends ConsumerWidget {
 
   Widget _buildBody(BuildContext context, ProfileListState state) {
     if (state.isLoading && state.profiles.isEmpty) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const ProfileListSkeleton();
     }
 
     if (state.error != null) {
