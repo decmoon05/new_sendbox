@@ -110,7 +110,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
       itemCount: conversation.messages.length,
       itemBuilder: (context, index) {
         final message = conversation.messages[index];
-        // TODO: 실제 사용자 ID로 교체
+        // 메시지 타입으로 발신자 판단 (sent = 내가 보낸 메시지)
         final isMe = message.type == MessageType.sent;
         return MessageBubble(message: message, isMe: isMe);
       },
