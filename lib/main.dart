@@ -31,6 +31,9 @@ void main() async {
       // SMS 리스너 시작 (비동기로 실행, 앱 시작을 막지 않음)
       _startSmsListener(container);
       
+      // 기존 SMS 메시지 동기화 (비동기로 실행, 앱 시작을 막지 않음)
+      _syncExistingSms(container);
+      
       runApp(
         UncontrolledProviderScope(
           container: container,
@@ -67,6 +70,20 @@ void _startSmsListener(ProviderContainer container) {
       debugPrint('SMS 리스너 시작 완료');
     } catch (e) {
       debugPrint('SMS 리스너 시작 실패: $e');
+    }
+  });
+}
+
+/// 기존 SMS 메시지 동기화
+void _syncExistingSms(ProviderContainer container) {
+  // 비동기로 실행하되 앱 시작을 막지 않음
+  Future.microtask(() async {
+    try {
+      final smsSyncService = container.read(smsSyncServiceProvider);
+      await smsSyncService.syncExistingSms();
+      debugPrint('기존 SMS 메시지 동기화 완료');
+    } catch (e) {
+      debugPrint('기존 SMS 메시지 동기화 실패: $e');
     }
   });
 }

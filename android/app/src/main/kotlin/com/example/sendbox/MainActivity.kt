@@ -122,8 +122,15 @@ class MainActivity: FlutterActivity() {
                     }
                 }
                 "getSmsMessages" -> {
-                    // TODO: SMS 메시지 가져오기 구현
-                    result.success(emptyList<Map<String, Any>>())
+                    try {
+                        val phoneNumber = call.argument<String>("phoneNumber")
+                        val limit = call.argument<Int>("limit") ?: 100
+                        
+                        val messages = getSmsMessages(phoneNumber, limit)
+                        result.success(messages)
+                    } catch (e: Exception) {
+                        result.error("READ_FAILED", "Failed to read SMS: ${e.message}", null)
+                    }
                 }
                 else -> {
                     result.notImplemented()
