@@ -8,6 +8,7 @@ import '../features/profile/presentation/pages/profile_create_page.dart';
 import '../features/profile/presentation/pages/profile_detail_page.dart';
 import '../features/profile/presentation/pages/profile_edit_page.dart';
 import '../features/settings/presentation/pages/settings_page.dart';
+import '../features/settings/presentation/pages/platform_settings_page.dart';
 
 /// 앱 라우터
 class AppRouter {
@@ -62,10 +63,15 @@ class AppRouter {
           settings: settings,
         );
 
-      case RouteNames.settings:
-        return MaterialPageRoute(
-          builder: (_) => const SettingsPage(),
-        );
+          case RouteNames.settings:
+            return MaterialPageRoute(
+              builder: (_) => const SettingsPage(),
+            );
+
+          case RouteNames.platformSettings:
+            return MaterialPageRoute(
+              builder: (_) => const PlatformSettingsPage(),
+            );
 
       default:
         return MaterialPageRoute(

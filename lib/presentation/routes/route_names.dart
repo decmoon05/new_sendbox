@@ -21,5 +21,6 @@ class RouteNames {
 
   // 설정
   static const String settings = '/settings';
+  static const String platformSettings = '/settings/platforms';
 }
 

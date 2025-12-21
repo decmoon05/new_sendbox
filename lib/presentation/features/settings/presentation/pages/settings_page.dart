@@ -90,7 +90,7 @@ class SettingsPage extends ConsumerWidget {
             title: '플랫폼 통합',
             subtitle: '연결된 메신저 플랫폼 관리',
             onTap: () {
-              // TODO: 플랫폼 통합 설정 페이지로 이동
+              Navigator.pushNamed(context, RouteNames.platformSettings);
             },
           ),
           const Divider(),
