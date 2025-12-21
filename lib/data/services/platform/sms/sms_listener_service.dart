@@ -108,27 +108,21 @@ class SmsListenerService {
       // 기존 대화 가져오기
       final conversationResult = await conversationRepository.getConversation(phoneNumber);
       
-      Conversation existingConversation;
-      conversationResult.fold(
-        (_) {
-          // 대화가 없으면 새로 생성
-          existingConversation = Conversation(
-            id: phoneNumber,
-            contactId: contactName,
-            platform: 'sms',
-            messages: [],
-            lastMessageAt: timestamp,
-            unreadCount: 0,
-            isPinned: false,
-            metadata: {
-              'platform': 'sms',
-              'phoneNumber': phoneNumber,
-            },
-          );
-        },
-        (conversation) {
-          existingConversation = conversation;
-        },
+      final existingConversation = conversationResult.fold(
+        (_) => Conversation(
+          id: phoneNumber,
+          contactId: contactName,
+          platform: 'sms',
+          messages: [],
+          lastMessageAt: timestamp,
+          unreadCount: 0,
+          isPinned: false,
+          metadata: {
+            'platform': 'sms',
+            'phoneNumber': phoneNumber,
+          },
+        ),
+        (conversation) => conversation,
       );
 
       // 새 메시지 생성

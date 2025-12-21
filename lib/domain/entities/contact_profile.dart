@@ -51,12 +51,14 @@ class ContactProfile extends Equatable {
 class PlatformIdentifier extends Equatable {
   final String platform; // sms, kakao, discord, etc.
   final String identifier;
+  final String? displayName; // 플랫폼별 표시 이름
   final DateTime? lastMessageAt;
   final int messageCount;
 
   const PlatformIdentifier({
     required this.platform,
     required this.identifier,
+    this.displayName,
     this.lastMessageAt,
     this.messageCount = 0,
   });
@@ -65,6 +67,7 @@ class PlatformIdentifier extends Equatable {
   List<Object?> get props => [
         platform,
         identifier,
+        displayName,
         lastMessageAt,
         messageCount,
       ];

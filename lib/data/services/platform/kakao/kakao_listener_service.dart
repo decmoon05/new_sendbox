@@ -90,28 +90,23 @@ class KakaoListenerService {
       // 기존 대화 확인
       final conversationResult = await conversationRepository.getConversation(message.conversationId);
       
-      Conversation conversation;
-      
-      conversationResult.fold(
-        (_) {
-          // 대화가 없으면 새로 생성
-          conversation = Conversation(
-            id: message.conversationId,
-            contactId: message.senderName ?? message.senderId,
-            platform: 'kakao',
-            messages: [message],
-            lastMessageAt: message.timestamp,
-            unreadCount: 1,
-            isPinned: false,
-            metadata: {
-              'platform': 'kakao',
-            },
-          );
-        },
+      final conversation = conversationResult.fold(
+        (_) => Conversation(
+          id: message.conversationId,
+          contactId: message.senderName ?? message.senderId,
+          platform: 'kakao',
+          messages: [message],
+          lastMessageAt: message.timestamp,
+          unreadCount: 1,
+          isPinned: false,
+          metadata: {
+            'platform': 'kakao',
+          },
+        ),
         (existingConversation) {
           // 기존 대화에 메시지 추가
           final updatedMessages = [...existingConversation.messages, message];
-          conversation = existingConversation.copyWith(
+          return existingConversation.copyWith(
             messages: updatedMessages,
             lastMessageAt: message.timestamp,
             unreadCount: existingConversation.unreadCount + (message.isRead ? 0 : 1),
@@ -147,7 +142,7 @@ class KakaoListenerService {
             (profile) => profile.platforms.any(
               (platform) => platform.platform == 'kakao' && 
                            (platform.identifier == conversation.contactId || 
-                            platform.displayName == conversation.contactId),
+                            (platform.displayName != null && platform.displayName == conversation.contactId)),
             ),
             orElse: () => profiles.firstWhere(
               (profile) => profile.name == conversation.contactId,
