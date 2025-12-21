@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/chat_provider.dart';
 import '../providers/chat_search_provider.dart';
+import '../providers/chat_filter_provider.dart';
 import '../../../../../domain/entities/conversation.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/datetime_extensions.dart';
@@ -34,14 +35,24 @@ class ChatPage extends ConsumerWidget {
                 },
               ),
         actions: [
-          if (searchState.query.isEmpty)
+          if (searchState.query.isEmpty) ...[
+            if (filterState.hasActiveFilters)
+              IconButton(
+                icon: const Icon(Icons.filter_alt),
+                color: AppColors.primary,
+                onPressed: () => _showFilterBottomSheet(context, ref),
+              ),
+            IconButton(
+              icon: Icon(filterState.hasActiveFilters ? Icons.filter_alt : Icons.filter_list),
+              onPressed: () => _showFilterBottomSheet(context, ref),
+            ),
             IconButton(
               icon: const Icon(Icons.search),
               onPressed: () {
                 ref.read(chatSearchProvider.notifier).search('');
               },
-            )
-          else
+            ),
+          ] else
             IconButton(
               icon: const Icon(Icons.clear),
               onPressed: () {
