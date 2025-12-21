@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/chat_provider.dart';
 import '../providers/chat_search_provider.dart';
 import '../providers/chat_filter_provider.dart';
+import '../../../../../domain/usecases/conversation/toggle_pin_conversation.dart';
+import '../../../../../core/di/providers.dart';
 import '../../../../../domain/entities/conversation.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/datetime_extensions.dart';
@@ -464,5 +466,92 @@ class _ConversationListItem extends StatelessWidget {
       default:
         return platform;
     }
+  }
+
+  void _showConversationOptions(BuildContext context, Conversation conversation) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(conversation.isPinned ? Icons.push_pin : Icons.push_pin_outlined),
+                title: Text(conversation.isPinned ? '고정 해제' : '고정하기'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _togglePin(context, conversation);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.delete_outline),
+                title: const Text('삭제'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _showDeleteConfirmation(context, conversation);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _togglePin(BuildContext context, Conversation conversation) {
+    final ref = ProviderScope.containerOf(context);
+    final repository = ref.read(conversationRepositoryProvider);
+    final togglePin = TogglePinConversation(repository);
+    
+    togglePin(conversation.id, !conversation.isPinned).then((result) {
+      result.fold(
+        (failure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('실패: ${failure.message}')),
+          );
+        },
+        (_) {
+          // 성공 시 대화 목록 새로고침
+          ref.read(chatProvider.notifier).refresh();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(conversation.isPinned ? '고정 해제됨' : '고정됨'),
+            ),
+          );
+        },
+      );
+    });
+  }
+
+  void _showDeleteConfirmation(BuildContext context, Conversation conversation) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('대화 삭제'),
+          content: Text('${conversation.contactId}의 대화를 삭제하시겠습니까?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('취소'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                // TODO: 대화 삭제 구현
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('삭제 기능은 아직 구현되지 않았습니다')),
+                );
+              },
+              child: const Text('삭제', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
