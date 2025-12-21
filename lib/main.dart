@@ -20,7 +20,7 @@ void main() async {
   runApp(
     ProviderScope(
       overrides: [
-        isarProvider.overrideWithValue(isar),
+        isarProvider.overrideWith((ref) => isar),
       ],
       child: const SendBoxApp(),
     ),
