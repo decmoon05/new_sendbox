@@ -289,7 +289,7 @@ class SettingsPage extends ConsumerWidget {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                _logout(context);
+                _logout(context, ref);
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('로그아웃되었습니다')),
                 );
