@@ -26,8 +26,16 @@ class ProfileDetailPage extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
-            onPressed: () {
-              // TODO: 프로필 편집 기능
+            onPressed: () async {
+              final result = await Navigator.pushNamed(
+                context,
+                RouteNames.profileEdit,
+                arguments: profileId,
+              );
+              // 편집 완료 후 프로필 새로고침
+              if (result == true) {
+                ref.invalidate(profileProvider(profileId));
+              }
             },
           ),
         ],
