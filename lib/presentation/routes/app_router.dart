@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'route_names.dart';
 import '../features/chat/presentation/pages/chat_page.dart';
+import '../features/chat/presentation/pages/conversation_create_page.dart';
 import '../features/chat/presentation/pages/chat_detail_page.dart';
 import '../features/profile/presentation/pages/profile_list_page.dart';
 import '../features/profile/presentation/pages/profile_create_page.dart';
@@ -25,6 +26,11 @@ class AppRouter {
           builder: (_) => const ChatPage(),
         );
 
+      case RouteNames.conversationCreate:
+        return MaterialPageRoute(
+          builder: (_) => const ConversationCreatePage(),
+        );
+
       case RouteNames.chatDetail:
         final id = settings.arguments as String? ?? '';
         return MaterialPageRoute(
@@ -35,6 +41,11 @@ class AppRouter {
       case RouteNames.profiles:
         return MaterialPageRoute(
           builder: (_) => const ProfileListPage(),
+        );
+
+      case RouteNames.profileCreate:
+        return MaterialPageRoute(
+          builder: (_) => const ProfileCreatePage(),
         );
 
       case RouteNames.profileDetail:
