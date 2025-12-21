@@ -15,6 +15,9 @@ class AppInit {
 
       // 로컬 데이터베이스 초기화
       await _initDatabase();
+
+      // 설정 서비스 초기화
+      await SettingsService.init();
       
       // 권한 요청 (비동기로 처리하여 앱 시작을 막지 않음)
       _requestPermissions();
