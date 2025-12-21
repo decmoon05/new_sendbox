@@ -130,13 +130,13 @@ final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
 });
 
 /// Gemini AI 서비스 Provider
-final geminiServiceProvider = Provider<GeminiService>((ref) {
+/// API 키가 없어도 앱이 실행되도록 nullable로 처리
+final geminiServiceProvider = Provider<GeminiService?>((ref) {
   final dio = ref.watch(dioProvider);
-  // TODO: API 키는 환경 변수나 설정에서 가져오기
-  // 실제 사용 시 보안 처리 필요 (flutter_dotenv 또는 환경 변수 사용)
   const apiKey = String.fromEnvironment('GEMINI_API_KEY', defaultValue: '');
   if (apiKey.isEmpty) {
-    throw Exception('GEMINI_API_KEY 환경 변수가 설정되지 않았습니다.');
+    // API 키가 없으면 null 반환 (앱은 계속 실행되지만 AI 기능 사용 불가)
+    return null;
   }
   return GeminiService(dio: dio, apiKey: apiKey);
 });
