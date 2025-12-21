@@ -3,6 +3,7 @@ import '../../../../../domain/entities/conversation.dart';
 import '../../../../../domain/usecases/conversation/get_conversations.dart';
 import '../../../../../domain/usecases/conversation/save_conversation.dart';
 import '../../../../../core/di/providers.dart';
+import '../../../../../core/utils/data_seeder.dart';
 
 /// 대화 목록 상태
 class ChatState {
@@ -50,8 +51,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
     required this.getConversations,
     required this.saveConversation,
   }) : super(const ChatState()) {
-    loadConversations();
+    _initialize();
   }
+
 
   /// 대화 목록 로드
   Future<void> loadConversations() async {
