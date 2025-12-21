@@ -4,6 +4,8 @@ import '../providers/chat_provider.dart';
 import '../providers/chat_search_provider.dart';
 import '../providers/chat_filter_provider.dart';
 import '../providers/chat_sort_provider.dart';
+import '../../../../../domain/usecases/conversation/mark_messages_as_read.dart';
+import '../../../../../domain/usecases/conversation/delete_conversation.dart';
 import '../../../../../domain/usecases/conversation/toggle_pin_conversation.dart';
 import '../../../../../core/di/providers.dart';
 import '../../../../../domain/entities/conversation.dart';
@@ -265,11 +267,9 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () {
-                      filterNotifier.setFilters(
-                        platform: selectedPlatform,
-                        unreadOnly: unreadOnly,
-                        pinnedOnly: pinnedOnly,
-                      );
+                      filterNotifier.setPlatform(selectedPlatform);
+                      filterNotifier.setUnreadOnly(unreadOnly);
+                      filterNotifier.setPinnedOnly(pinnedOnly);
                       Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
@@ -310,9 +310,9 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                 ),
               ),
               const SizedBox(height: 24),
-              RadioListTile<ChatSortBy>(
+              RadioListTile<ConversationSortBy>(
                 title: const Text('최신순'),
-                value: ChatSortBy.latest,
+                value: ConversationSortBy.recent,
                 groupValue: sortState.sortBy,
                 onChanged: (value) {
                   if (value != null) {
@@ -321,9 +321,9 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                   }
                 },
               ),
-              RadioListTile<ChatSortBy>(
+              RadioListTile<ConversationSortBy>(
                 title: const Text('이름순'),
-                value: ChatSortBy.name,
+                value: ConversationSortBy.name,
                 groupValue: sortState.sortBy,
                 onChanged: (value) {
                   if (value != null) {
@@ -332,20 +332,9 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                   }
                 },
               ),
-              RadioListTile<ChatSortBy>(
+              RadioListTile<ConversationSortBy>(
                 title: const Text('읽지 않은 메시지 먼저'),
-                value: ChatSortBy.unreadFirst,
-                groupValue: sortState.sortBy,
-                onChanged: (value) {
-                  if (value != null) {
-                    sortNotifier.setSortBy(value);
-                    Navigator.pop(context);
-                  }
-                },
-              ),
-              RadioListTile<ChatSortBy>(
-                title: const Text('고정된 대화가 위에'),
-                value: ChatSortBy.pinnedAtTop,
+                value: ConversationSortBy.unread,
                 groupValue: sortState.sortBy,
                 onChanged: (value) {
                   if (value != null) {
