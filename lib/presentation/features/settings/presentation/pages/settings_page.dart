@@ -180,7 +180,7 @@ class SettingsPage extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: OutlinedButton.icon(
               onPressed: () {
-                _showLogoutDialog(context);
+                _showLogoutDialog(context, ref);
               },
               icon: const Icon(Icons.logout),
               label: const Text('로그아웃'),
