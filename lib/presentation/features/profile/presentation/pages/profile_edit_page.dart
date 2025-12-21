@@ -48,13 +48,19 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
   Future<void> _loadProfile() async {
     final profileAsync = ref.read(profileProvider(widget.profileId));
     
-    profileAsync.whenData((profile) {
-      _nameController.text = profile.name;
-      _phoneController.text = profile.phoneNumber ?? '';
-      _emailController.text = profile.email ?? '';
-      _notesController.text = profile.notes ?? '';
-      _priority = profile.priority;
-    });
+    await profileAsync.when(
+      data: (profile) {
+        if (profile != null) {
+          _nameController.text = profile.name;
+          _phoneController.text = profile.phoneNumber ?? '';
+          _emailController.text = profile.email ?? '';
+          _notesController.text = profile.notes ?? '';
+          _priority = profile.priority;
+        }
+      },
+      loading: () {},
+      error: (_, __) {},
+    );
   }
 
   Future<void> _saveProfile() async {
