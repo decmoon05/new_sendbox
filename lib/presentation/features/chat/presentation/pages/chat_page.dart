@@ -364,7 +364,7 @@ class _ConversationListItem extends StatelessWidget {
                       ),
                       ...platforms.map((platform) {
                         return ChoiceChip(
-                          label: Text(_getPlatformNameStatic(platform)),
+                          label: Text(ChatPage._getPlatformNameStatic(platform)),
                           selected: selectedPlatform == platform,
                           onSelected: (selected) {
                             setState(() {
