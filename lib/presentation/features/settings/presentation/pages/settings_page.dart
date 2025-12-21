@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/di/providers.dart';
+import '../../../../../core/services/settings_service.dart';
+import '../../../../routes/route_names.dart';
 
 /// 설정 페이지
 class SettingsPage extends ConsumerWidget {
