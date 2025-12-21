@@ -45,6 +45,10 @@ class ChatPage extends ConsumerWidget {
               ),
         actions: [
           if (searchState.query.isEmpty) ...[
+            IconButton(
+              icon: const Icon(Icons.sort),
+              onPressed: () => _showSortBottomSheet(context, ref),
+            ),
             if (filterState.hasActiveFilters)
               IconButton(
                 icon: const Icon(Icons.filter_alt),
