@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/services.dart';
-import '../../../domain/entities/conversation.dart';
-import '../../../domain/entities/message.dart';
-import '../../../domain/entities/contact_profile.dart';
-import '../../../domain/repositories/conversation_repository.dart';
-import '../../../domain/repositories/profile_repository.dart';
+import '../../../../domain/entities/conversation.dart';
+import '../../../../domain/entities/message.dart';
+import '../../../../domain/entities/contact_profile.dart';
+import '../../../../domain/repositories/conversation_repository.dart';
+import '../../../../domain/repositories/profile_repository.dart';
 import 'sms_platform_adapter.dart';
 import 'sms_service.dart';
 

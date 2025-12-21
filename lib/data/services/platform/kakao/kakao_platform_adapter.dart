@@ -1,5 +1,5 @@
-import '../../../domain/entities/message.dart';
-import '../../../domain/entities/conversation.dart';
+import '../../../../domain/entities/message.dart';
+import '../../../../domain/entities/conversation.dart';
 
 /// 카카오톡 플랫폼 어댑터
 /// 카카오톡 알림에서 받은 메시지를 앱의 메시지 모델로 변환
