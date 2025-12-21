@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:new_sendbox/core/extensions/datetime_extensions.dart';
+import 'package:sendbox/core/extensions/datetime_extensions.dart';
 
 void main() {
   group('DateTimeExtensions', () {

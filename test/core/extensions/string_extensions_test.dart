@@ -1,43 +1,42 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:new_sendbox/core/extensions/string_extensions.dart';
+import 'package:sendbox/core/extensions/string_extensions.dart';
 
 void main() {
   group('StringExtensions', () {
-    group('capitalizeFirst', () {
+    group('capitalize', () {
       test('should capitalize first letter', () {
-        expect('hello'.capitalizeFirst(), 'Hello');
-        expect('HELLO'.capitalizeFirst(), 'HELLO'); // 첫 글자만 변경
+        expect('hello'.capitalize, 'Hello');
+        expect('HELLO'.capitalize, 'HELLO'); // 첫 글자만 변경
       });
 
       test('should handle empty strings', () {
-        expect(''.capitalizeFirst(), '');
+        expect(''.capitalize, '');
       });
     });
 
-    group('isNumeric', () {
-      test('should return true for numeric strings', () {
-        expect('123'.isNumeric, true);
-        expect('0'.isNumeric, true);
-        expect('999'.isNumeric, true);
-      });
-
-      test('should return false for non-numeric strings', () {
-        expect('abc'.isNumeric, false);
-        expect('12.34'.isNumeric, false);
-        expect('12a'.isNumeric, false);
+    group('capitalizeWords', () {
+      test('should capitalize all words', () {
+        expect('hello world'.capitalizeWords, 'Hello World');
+        expect('test string'.capitalizeWords, 'Test String');
       });
     });
 
-    group('isValidEmail', () {
-      test('should return true for valid emails', () {
-        expect('test@example.com'.isValidEmail, true);
-        expect('user.name@domain.co.uk'.isValidEmail, true);
+    group('toIntOrNull', () {
+      test('should return int for valid numbers', () {
+        expect('123'.toIntOrNull(), 123);
+        expect('0'.toIntOrNull(), 0);
       });
 
-      test('should return false for invalid emails', () {
-        expect('invalid-email'.isValidEmail, false);
-        expect('test@'.isValidEmail, false);
-        expect(''.isValidEmail, false);
+      test('should return null for invalid numbers', () {
+        expect('abc'.toIntOrNull(), isNull);
+        expect('12.34'.toIntOrNull(), isNull);
+      });
+    });
+
+    group('truncate', () {
+      test('should truncate long strings', () {
+        expect('hello world'.truncate(5), 'hello...');
+        expect('short'.truncate(10), 'short'); // 짧으면 그대로
       });
     });
   });

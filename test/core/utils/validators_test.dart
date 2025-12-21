@@ -1,50 +1,63 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:new_sendbox/core/utils/validators.dart';
+import 'package:sendbox/core/utils/validators.dart';
 
 void main() {
   group('Validators', () {
     group('isValidEmail', () {
       test('should return true for valid email addresses', () {
-        expect(isValidEmail('test@example.com'), true);
-        expect(isValidEmail('user.name@domain.co.uk'), true);
-        expect(isValidEmail('test123@test-domain.com'), true);
+        expect(Validators.isValidEmail('test@example.com'), true);
+        expect(Validators.isValidEmail('user.name@domain.co.uk'), true);
+        expect(Validators.isValidEmail('test123@test-domain.com'), true);
       });
 
       test('should return false for invalid email addresses', () {
-        expect(isValidEmail('invalid-email'), false);
-        expect(isValidEmail('test@'), false);
-        expect(isValidEmail('@example.com'), false);
-        expect(isValidEmail('test @example.com'), false);
-        expect(isValidEmail(''), false);
+        expect(Validators.isValidEmail('invalid-email'), false);
+        expect(Validators.isValidEmail('test@'), false);
+        expect(Validators.isValidEmail('@example.com'), false);
+        expect(Validators.isValidEmail('test @example.com'), false);
+        expect(Validators.isValidEmail(''), false);
       });
     });
 
-    group('isValidPassword', () {
-      test('should return true for valid passwords', () {
-        expect(isValidPassword('password123'), true);
-        expect(isValidPassword('SecurePass!'), true);
-        expect(isValidPassword('a'.repeat(8)), true); // 최소 8자
+    group('validatePassword', () {
+      test('should return valid result for valid passwords', () {
+        final result1 = Validators.validatePassword('Password123');
+        expect(result1.isValid, true);
+        expect(result1.error, isNull);
+
+        final result2 = Validators.validatePassword('SecurePass!1');
+        expect(result2.isValid, true);
+        expect(result2.error, isNull);
       });
 
-      test('should return false for invalid passwords', () {
-        expect(isValidPassword('short'), false); // 8자 미만
-        expect(isValidPassword(''), false);
-        expect(isValidPassword('1234567'), false); // 7자
-      });
-    });
-
-    group('isNotNullOrEmpty', () {
-      test('should return true for non-null and non-empty strings', () {
-        expect(isNotNullOrEmpty('test'), true);
-        expect(isNotNullOrEmpty('  test  '), true);
-        expect(isNotNullOrEmpty('a'), true);
+      test('should return invalid result for short passwords', () {
+        final result = Validators.validatePassword('short');
+        expect(result.isValid, false);
+        expect(result.error, contains('8자 이상'));
       });
 
-      test('should return false for null, empty, or whitespace-only strings', () {
-        expect(isNotNullOrEmpty(null), false);
-        expect(isNotNullOrEmpty(''), false);
-        expect(isNotNullOrEmpty('   '), false); // 공백만
-        expect(isNotNullOrEmpty('\t\n'), false); // 탭/개행만
+      test('should return invalid result for empty passwords', () {
+        final result = Validators.validatePassword('');
+        expect(result.isValid, false);
+        expect(result.error, contains('8자 이상'));
+      });
+
+      test('should return invalid result for passwords without uppercase', () {
+        final result = Validators.validatePassword('password123');
+        expect(result.isValid, false);
+        expect(result.error, contains('대문자'));
+      });
+
+      test('should return invalid result for passwords without lowercase', () {
+        final result = Validators.validatePassword('PASSWORD123');
+        expect(result.isValid, false);
+        expect(result.error, contains('소문자'));
+      });
+
+      test('should return invalid result for passwords without digit', () {
+        final result = Validators.validatePassword('Password');
+        expect(result.isValid, false);
+        expect(result.error, contains('숫자'));
       });
     });
   });
