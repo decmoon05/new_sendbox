@@ -1,5 +1,4 @@
 import 'package:flutter/services.dart';
-import 'sms_service_platform_interface.dart';
 
 /// SMS 서비스
 /// Android의 SMS 기능을 사용하기 위한 플랫폼 채널 서비스
