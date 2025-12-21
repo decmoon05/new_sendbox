@@ -26,9 +26,8 @@ final networkInfoProvider = Provider<NetworkInfo>((ref) {
 });
 
 /// Isar 데이터베이스 Provider
-final isarProvider = FutureProvider<Isar>((ref) async {
-  return await IsarStorage.getInstance();
-});
+/// main.dart에서 초기화된 Isar 인스턴스를 여기에 저장
+final isarProvider = StateProvider<Isar?>((ref) => null);
 
 /// Firebase Firestore Provider
 final firestoreProvider = Provider<FirebaseFirestore>((ref) {
@@ -58,7 +57,7 @@ final dioProvider = Provider<Dio>((ref) {
 
 /// 로컬 대화 데이터소스 Provider
 final conversationLocalDataSourceProvider = Provider<ConversationLocalDataSource>((ref) {
-  final isar = ref.watch(isarProvider).value;
+  final isar = ref.watch(isarProvider);
   if (isar == null) {
     throw Exception('Isar가 초기화되지 않았습니다.');
   }
@@ -67,7 +66,7 @@ final conversationLocalDataSourceProvider = Provider<ConversationLocalDataSource
 
 /// 로컬 프로필 데이터소스 Provider
 final profileLocalDataSourceProvider = Provider<ProfileLocalDataSource>((ref) {
-  final isar = ref.watch(isarProvider).value;
+  final isar = ref.watch(isarProvider);
   if (isar == null) {
     throw Exception('Isar가 초기화되지 않았습니다.');
   }

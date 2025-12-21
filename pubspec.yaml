@@ -74,17 +74,17 @@ flutter:
 
   assets:
     - assets/images/
-    - assets/fonts/
+    # - assets/fonts/  # 폰트 파일이 없으면 주석 처리
 
-  fonts:
-    - family: Pretendard
-      fonts:
-        - asset: assets/fonts/Pretendard-Regular.ttf
-        - asset: assets/fonts/Pretendard-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/Pretendard-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/Pretendard-Bold.ttf
-          weight: 700
+  # fonts:
+  #   - family: Pretendard
+  #     fonts:
+  #       - asset: assets/fonts/Pretendard-Regular.ttf
+  #       - asset: assets/fonts/Pretendard-Medium.ttf
+  #         weight: 500
+  #       - asset: assets/fonts/Pretendard-SemiBold.ttf
+  #         weight: 600
+  #       - asset: assets/fonts/Pretendard-Bold.ttf
+  #         weight: 700
 
 

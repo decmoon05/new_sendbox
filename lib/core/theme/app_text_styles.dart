@@ -5,11 +5,12 @@ import 'app_colors.dart';
 class AppTextStyles {
   AppTextStyles._();
 
-  static const String fontFamily = 'Pretendard';
+  // Pretendard 폰트가 없으면 시스템 기본 폰트 사용
+  // static const String? fontFamily = null; // null이면 시스템 기본 폰트
 
   // Headline Styles
   static const TextStyle headline1 = TextStyle(
-    fontFamily: fontFamily,
+    // fontFamily: fontFamily, // 폰트 파일이 없으면 시스템 기본 폰트 사용
     fontSize: 34,
     fontWeight: FontWeight.bold,
     height: 1.2,
@@ -18,7 +19,7 @@ class AppTextStyles {
   );
 
   static const TextStyle headline2 = TextStyle(
-    fontFamily: fontFamily,
+    // fontFamily: fontFamily, // 폰트 파일이 없으면 시스템 기본 폰트 사용
     fontSize: 28,
     fontWeight: FontWeight.bold,
     height: 1.2,
@@ -27,7 +28,7 @@ class AppTextStyles {
   );
 
   static const TextStyle headline3 = TextStyle(
-    fontFamily: fontFamily,
+    // fontFamily: fontFamily, // 폰트 파일이 없으면 시스템 기본 폰트 사용
     fontSize: 22,
     fontWeight: FontWeight.w600,
     height: 1.3,
@@ -37,7 +38,7 @@ class AppTextStyles {
 
   // Body Styles
   static const TextStyle bodyLarge = TextStyle(
-    fontFamily: fontFamily,
+    // fontFamily: fontFamily, // 폰트 파일이 없으면 시스템 기본 폰트 사용
     fontSize: 17,
     fontWeight: FontWeight.normal,
     height: 1.4,
@@ -46,7 +47,7 @@ class AppTextStyles {
   );
 
   static const TextStyle bodyMedium = TextStyle(
-    fontFamily: fontFamily,
+    // fontFamily: fontFamily, // 폰트 파일이 없으면 시스템 기본 폰트 사용
     fontSize: 15,
     fontWeight: FontWeight.normal,
     height: 1.4,
@@ -55,7 +56,7 @@ class AppTextStyles {
   );
 
   static const TextStyle bodySmall = TextStyle(
-    fontFamily: fontFamily,
+    // fontFamily: fontFamily, // 폰트 파일이 없으면 시스템 기본 폰트 사용
     fontSize: 13,
     fontWeight: FontWeight.normal,
     height: 1.4,
@@ -65,7 +66,7 @@ class AppTextStyles {
 
   // Caption
   static const TextStyle caption = TextStyle(
-    fontFamily: fontFamily,
+    // fontFamily: fontFamily, // 폰트 파일이 없으면 시스템 기본 폰트 사용
     fontSize: 12,
     fontWeight: FontWeight.normal,
     height: 1.3,
@@ -75,7 +76,7 @@ class AppTextStyles {
 
   // Button Styles
   static const TextStyle buttonLarge = TextStyle(
-    fontFamily: fontFamily,
+    // fontFamily: fontFamily, // 폰트 파일이 없으면 시스템 기본 폰트 사용
     fontSize: 17,
     fontWeight: FontWeight.w600,
     height: 1.2,
@@ -84,7 +85,7 @@ class AppTextStyles {
   );
 
   static const TextStyle buttonMedium = TextStyle(
-    fontFamily: fontFamily,
+    // fontFamily: fontFamily, // 폰트 파일이 없으면 시스템 기본 폰트 사용
     fontSize: 15,
     fontWeight: FontWeight.w600,
     height: 1.2,
@@ -93,7 +94,7 @@ class AppTextStyles {
   );
 
   static const TextStyle buttonSmall = TextStyle(
-    fontFamily: fontFamily,
+    // fontFamily: fontFamily, // 폰트 파일이 없으면 시스템 기본 폰트 사용
     fontSize: 13,
     fontWeight: FontWeight.w600,
     height: 1.2,
