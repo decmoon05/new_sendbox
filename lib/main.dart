@@ -22,7 +22,7 @@ void main() async {
   
   final container = ProviderContainer(
     overrides: [
-      isarProvider.overrideWithValue(isar),
+      isarProvider.overrideWith((ref) => isar),
     ],
   );
 

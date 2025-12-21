@@ -51,7 +51,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
     required this.getConversations,
     required this.saveConversation,
   }) : super(const ChatState()) {
-    _initialize();
+    loadConversations();
   }
 
 
