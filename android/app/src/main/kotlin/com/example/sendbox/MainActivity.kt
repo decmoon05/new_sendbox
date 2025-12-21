@@ -147,4 +147,52 @@ class MainActivity: FlutterActivity() {
             // 리시버가 등록되지 않았을 수 있음
         }
     }
+    
+    /// SMS 메시지 가져오기
+    private fun getSmsMessages(phoneNumber: String?, limit: Int): List<Map<String, Any>> {
+        val messages = mutableListOf<Map<String, Any>>()
+        
+        try {
+            val uri = android.provider.Telephony.Sms.CONTENT_URI
+            val cursor = contentResolver.query(
+                uri,
+                arrayOf(
+                    android.provider.Telephony.Sms._ID,
+                    android.provider.Telephony.Sms.ADDRESS,
+                    android.provider.Telephony.Sms.BODY,
+                    android.provider.Telephony.Sms.DATE,
+                    android.provider.Telephony.Sms.TYPE,
+                    android.provider.Telephony.Sms.READ
+                ),
+                if (phoneNumber != null) "${android.provider.Telephony.Sms.ADDRESS} = ?" else null,
+                if (phoneNumber != null) arrayOf(phoneNumber) else null,
+                "${android.provider.Telephony.Sms.DATE} DESC LIMIT $limit"
+            )
+            
+            cursor?.use {
+                val idIndex = it.getColumnIndex(android.provider.Telephony.Sms._ID)
+                val addressIndex = it.getColumnIndex(android.provider.Telephony.Sms.ADDRESS)
+                val bodyIndex = it.getColumnIndex(android.provider.Telephony.Sms.BODY)
+                val dateIndex = it.getColumnIndex(android.provider.Telephony.Sms.DATE)
+                val typeIndex = it.getColumnIndex(android.provider.Telephony.Sms.TYPE)
+                val readIndex = it.getColumnIndex(android.provider.Telephony.Sms.READ)
+                
+                while (it.moveToNext() && messages.size < limit) {
+                    val message = mapOf(
+                        "id" to it.getString(idIndex),
+                        "phoneNumber" to it.getString(addressIndex),
+                        "message" to it.getString(bodyIndex),
+                        "timestamp" to it.getLong(dateIndex),
+                        "type" to if (it.getInt(typeIndex) == android.provider.Telephony.Sms.MESSAGE_TYPE_SENT) "sent" else "received",
+                        "isRead" to (it.getInt(readIndex) == 1)
+                    )
+                    messages.add(message)
+                }
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("MainActivity", "Error reading SMS: ${e.message}")
+        }
+        
+        return messages
+    }
 }
