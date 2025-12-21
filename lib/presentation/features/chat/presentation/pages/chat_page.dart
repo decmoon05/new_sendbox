@@ -78,8 +78,8 @@ class ChatPage extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () => ref.read(chatProvider.notifier).refresh(),
         child: searchState.query.isNotEmpty
-            ? _buildSearchResults(context, searchState, ref)
-            : _buildBody(context, chatState.copyWith(conversations: sortedConversations), ref),
+            ? ChatPage._buildSearchResults(context, searchState, ref)
+            : ChatPage._buildBody(context, chatState.copyWith(conversations: sortedConversations), ref),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -90,7 +90,7 @@ class ChatPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildBody(BuildContext context, ChatState state, WidgetRef ref) {
+  static Widget _buildBody(BuildContext context, ChatState state, WidgetRef ref) {
     if (state.isLoading && state.conversations.isEmpty) {
       return const ConversationListSkeleton();
     }
@@ -226,7 +226,7 @@ class _ConversationListItem extends StatelessWidget {
     );
   }
 
-  Widget _buildSearchResults(BuildContext context, ChatSearchState searchState) {
+  static Widget _buildSearchResults(BuildContext context, ChatSearchState searchState, WidgetRef ref) {
     if (searchState.isSearching) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -294,7 +294,7 @@ class _ConversationListItem extends StatelessWidget {
     );
   }
 
-  void _showFilterBottomSheet(BuildContext context, WidgetRef ref) {
+  static void _showFilterBottomSheet(BuildContext context, WidgetRef ref) {
     final filterState = ref.read(chatFilterProvider);
     final filterNotifier = ref.read(chatFilterProvider.notifier);
 
@@ -569,7 +569,7 @@ class _ConversationListItem extends StatelessWidget {
     });
   }
 
-  void _showSortBottomSheet(BuildContext context, WidgetRef ref) {
+  static void _showSortBottomSheet(BuildContext context, WidgetRef ref) {
     final sortState = ref.read(chatSortProvider);
     final sortNotifier = ref.read(chatSortProvider.notifier);
 
