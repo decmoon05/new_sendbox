@@ -12,6 +12,7 @@ import '../../../../../domain/entities/contact_profile.dart';
 import '../../../../../domain/repositories/profile_repository.dart';
 import '../../../../../core/di/providers.dart';
 import '../../../ai_recommend/presentation/providers/ai_recommendation_provider.dart';
+import '../../../../routes/route_names.dart';
 
 /// 대화 상세 페이지
 class ChatDetailPage extends ConsumerStatefulWidget {
