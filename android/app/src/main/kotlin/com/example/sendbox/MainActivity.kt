@@ -50,10 +50,64 @@ class MainActivity: FlutterActivity() {
         smsChannel.setMethodCallHandler { call, result ->
             when (call.method) {
                 "sendSms" -> {
-                    val phoneNumber = call.argument<String>("phoneNumber") ?: ""
-                    val message = call.argument<String>("message") ?: ""
-                    // TODO: SMS 전송 구현
-                    result.success(false)
+                    try {
+                        val phoneNumber = call.argument<String>("phoneNumber") ?: ""
+                        val message = call.argument<String>("message") ?: ""
+                        
+                        if (phoneNumber.isEmpty() || message.isEmpty()) {
+                            result.error("INVALID_ARGUMENT", "Phone number and message cannot be empty", null)
+                            return@setMethodCallHandler
+                        }
+                        
+                        val smsManager = android.telephony.SmsManager.getDefault()
+                        val parts = smsManager.divideMessage(message)
+                        
+                        if (parts.size == 1) {
+                            // 단일 메시지
+                            smsManager.sendTextMessage(
+                                phoneNumber,
+                                null,
+                                message,
+                                null,
+                                null
+                            )
+                            result.success(true)
+                        } else {
+                            // 긴 메시지 (여러 부분으로 나뉨)
+                            val sentIntents = ArrayList<android.app.PendingIntent>()
+                            val deliveryIntents = ArrayList<android.app.PendingIntent>()
+                            
+                            for (i in parts.indices) {
+                                sentIntents.add(
+                                    android.app.PendingIntent.getBroadcast(
+                                        this,
+                                        0,
+                                        android.content.Intent("SMS_SENT"),
+                                        android.app.PendingIntent.FLAG_IMMUTABLE
+                                    )
+                                )
+                                deliveryIntents.add(
+                                    android.app.PendingIntent.getBroadcast(
+                                        this,
+                                        0,
+                                        android.content.Intent("SMS_DELIVERED"),
+                                        android.app.PendingIntent.FLAG_IMMUTABLE
+                                    )
+                                )
+                            }
+                            
+                            smsManager.sendMultipartTextMessage(
+                                phoneNumber,
+                                null,
+                                parts,
+                                sentIntents,
+                                deliveryIntents
+                            )
+                            result.success(true)
+                        }
+                    } catch (e: Exception) {
+                        result.error("SEND_FAILED", "Failed to send SMS: ${e.message}", null)
+                    }
                 }
                 "startListening" -> {
                     // 이미 리시버가 등록되어 있음

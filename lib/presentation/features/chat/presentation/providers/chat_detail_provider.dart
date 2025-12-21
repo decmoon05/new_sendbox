@@ -4,6 +4,7 @@ import '../../../../../domain/entities/message.dart';
 import '../../../../../domain/repositories/conversation_repository.dart';
 import '../../../../../core/di/providers.dart';
 import '../../../../../core/errors/failures.dart';
+import '../../../../../data/services/platform/sms/sms_service.dart';
 import 'chat_provider.dart';
 
 /// 대화 상세 상태
