@@ -232,4 +232,237 @@ class _ConversationListItem extends StatelessWidget {
       },
     );
   }
+
+  Widget _buildSearchResults(BuildContext context, ChatSearchState searchState) {
+    if (searchState.isSearching) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (searchState.error != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.error_outline,
+              size: 64,
+              color: AppColors.error,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              searchState.error!,
+              style: Theme.of(context).textTheme.bodyLarge,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (searchState.results.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.search_off,
+              size: 64,
+              color: AppColors.textSecondary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              '검색 결과가 없습니다',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '"${searchState.query}"에 대한 결과를 찾을 수 없습니다',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: searchState.results.length,
+      itemBuilder: (context, index) {
+        final conversation = searchState.results[index];
+        return _ConversationListItem(conversation: conversation);
+      },
+    );
+  }
+
+  void _showFilterBottomSheet(BuildContext context, WidgetRef ref) {
+    final filterState = ref.read(chatFilterProvider);
+    final filterNotifier = ref.read(chatFilterProvider.notifier);
+
+    // 사용 가능한 플랫폼 목록 가져오기
+    final conversations = ref.read(chatProvider).conversations;
+    final platforms = conversations.map((c) => c.platform).toSet().toList()..sort();
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            String? selectedPlatform = filterState.platform;
+            bool? unreadOnly = filterState.unreadOnly;
+            bool pinnedOnly = filterState.pinnedOnly;
+
+            return Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        '필터',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          filterNotifier.clearFilters();
+                          Navigator.pop(context);
+                        },
+                        child: const Text('초기화'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  
+                  // 플랫폼 필터
+                  const Text(
+                    '플랫폼',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      ChoiceChip(
+                        label: const Text('전체'),
+                        selected: selectedPlatform == null,
+                        onSelected: (selected) {
+                          setState(() {
+                            selectedPlatform = selected ? null : selectedPlatform;
+                          });
+                        },
+                      ),
+                      ...platforms.map((platform) {
+                        return ChoiceChip(
+                          label: Text(_getPlatformName(platform)),
+                          selected: selectedPlatform == platform,
+                          onSelected: (selected) {
+                            setState(() {
+                              selectedPlatform = selected ? platform : null;
+                            });
+                          },
+                        );
+                      }),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  
+                  // 읽지 않은 메시지 필터
+                  const Text(
+                    '읽음 상태',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      ChoiceChip(
+                        label: const Text('전체'),
+                        selected: unreadOnly == null,
+                        onSelected: (selected) {
+                          setState(() {
+                            unreadOnly = selected ? null : unreadOnly;
+                          });
+                        },
+                      ),
+                      ChoiceChip(
+                        label: const Text('읽지 않음'),
+                        selected: unreadOnly == true,
+                        onSelected: (selected) {
+                          setState(() {
+                            unreadOnly = selected ? true : null;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  
+                  // 고정된 대화 필터
+                  CheckboxListTile(
+                    title: const Text('고정된 대화만'),
+                    value: pinnedOnly,
+                    onChanged: (value) {
+                      setState(() {
+                        pinnedOnly = value ?? false;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  
+                  // 적용 버튼
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        filterNotifier.setPlatform(selectedPlatform);
+                        filterNotifier.setUnreadOnly(unreadOnly);
+                        filterNotifier.setPinnedOnly(pinnedOnly);
+                        Navigator.pop(context);
+                      },
+                      child: const Text('적용'),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  String _getPlatformName(String platform) {
+    switch (platform.toLowerCase()) {
+      case 'sms':
+        return 'SMS';
+      case 'kakao':
+      case 'kakaotalk':
+        return '카카오톡';
+      case 'discord':
+        return '디스코드';
+      case 'instagram':
+        return '인스타그램';
+      case 'telegram':
+        return '텔레그램';
+      default:
+        return platform;
+    }
+  }
 }
