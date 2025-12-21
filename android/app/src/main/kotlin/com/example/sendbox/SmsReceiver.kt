@@ -28,7 +28,7 @@ class SmsReceiver(private val channel: MethodChannel) : BroadcastReceiver() {
                             val timestamp = it.timestampMillis
                             
                             // Flutter에 SMS 수신 알림
-                            channel.invokeMethod("onSmsReceived", mapOf(
+                            channel?.invokeMethod("onSmsReceived", mapOf(
                                 "phoneNumber" to phoneNumber,
                                 "message" to messageBody,
                                 "timestamp" to timestamp
