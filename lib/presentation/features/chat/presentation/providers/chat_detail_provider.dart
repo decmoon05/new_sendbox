@@ -39,11 +39,13 @@ final chatDetailProvider = StateNotifierProvider.family<
     String>((ref, conversationId) {
   final repository = ref.watch(conversationRepositoryProvider);
   final chatNotifier = ref.watch(chatProvider.notifier);
+  final smsService = ref.watch(smsServiceProvider);
 
   return ChatDetailNotifier(
     repository: repository,
     conversationId: conversationId,
     chatNotifier: chatNotifier,
+    smsService: smsService,
   );
 });
 
@@ -52,11 +54,13 @@ class ChatDetailNotifier extends StateNotifier<ChatDetailState> {
   final ConversationRepository repository;
   final String conversationId;
   final ChatNotifier? chatNotifier;
+  final SmsService? smsService;
 
   ChatDetailNotifier({
     required this.repository,
     required this.conversationId,
     this.chatNotifier,
+    this.smsService,
   }) : super(const ChatDetailState()) {
     loadConversation();
   }
@@ -83,6 +87,28 @@ class ChatDetailNotifier extends StateNotifier<ChatDetailState> {
   Future<void> sendMessage(String content) async {
     final currentConversation = state.conversation;
     if (currentConversation == null) return;
+
+    // SMS 플랫폼인 경우 실제 SMS 전송
+    if (currentConversation.platform == 'sms' && smsService != null) {
+      // 전화번호 추출 (metadata 또는 contactId에서)
+      final phoneNumber = currentConversation.metadata['phoneNumber'] as String? ?? 
+                         currentConversation.contactId;
+      
+      try {
+        final success = await smsService!.sendSms(
+          phoneNumber: phoneNumber,
+          message: content,
+        );
+        
+        if (!success) {
+          state = state.copyWith(error: 'SMS 전송에 실패했습니다.');
+          return;
+        }
+      } catch (e) {
+        state = state.copyWith(error: 'SMS 전송 중 오류가 발생했습니다: $e');
+        return;
+      }
+    }
 
     // 새 메시지 생성
     final newMessage = Message(
