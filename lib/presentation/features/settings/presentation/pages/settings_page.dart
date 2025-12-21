@@ -365,7 +365,7 @@ class SettingsPage extends ConsumerWidget {
   }
 
   /// 로그아웃
-  Future<void> _logout(BuildContext context) async {
+  Future<void> _logout(BuildContext context, WidgetRef ref) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
