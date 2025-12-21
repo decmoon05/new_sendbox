@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../domain/entities/conversation.dart';
 import '../../../../../domain/entities/message.dart';
 import '../../../../../domain/repositories/conversation_repository.dart';
+import '../../../../../domain/usecases/conversation/mark_messages_as_read.dart';
 import '../../../../../core/di/providers.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../../../data/services/platform/sms/sms_service.dart';
