@@ -142,61 +142,103 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
   }
 
   void _showAIRecommendation(BuildContext context) {
+    // TODO: 실제 conversation과 profile 가져오기
+    // 현재는 임시로 빈 데이터 사용
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.5,
-        minChildSize: 0.3,
-        maxChildSize: 0.9,
-        expand: false,
-        builder: (context, scrollController) {
-          return Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: AppColors.divider,
-                      width: 1,
-                    ),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    const Text(
-                      'AI 메시지 추천',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+      builder: (context) {
+        // TODO: 실제 conversation과 profile로 교체
+        // final conversation = ...;
+        // final profile = ...;
+        // final params = AIRecommendationParams(
+        //   conversation: conversation,
+        //   profile: profile,
+        //   messageContext: _messageController.text.trim(),
+        // );
+        // final recommendationState = ref.watch(aiRecommendationProvider(params));
+
+        return DraggableScrollableSheet(
+          initialChildSize: 0.5,
+          minChildSize: 0.3,
+          maxChildSize: 0.9,
+          expand: false,
+          builder: (context, scrollController) {
+            return Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: AppColors.divider,
+                        width: 1,
                       ),
                     ),
-                    const Spacer(),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
+                  ),
+                  child: Row(
+                    children: [
+                      const Text(
+                        'AI 메시지 추천',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                child: ListView(
-                  controller: scrollController,
-                  padding: const EdgeInsets.all(16),
-                  children: [
-                    // TODO: 실제 AI 추천 데이터 표시
-                    const Text('AI 추천 기능은 곧 추가됩니다'),
-                  ],
+                Expanded(
+                  child: ListView(
+                    controller: scrollController,
+                    padding: const EdgeInsets.all(16),
+                    children: [
+                      // TODO: 실제 AI 추천 데이터 표시
+                      // Consumer(
+                      //   builder: (context, ref, child) {
+                      //     final state = recommendationState;
+                      //     if (state.isLoading) {
+                      //       return const Center(child: CircularProgressIndicator());
+                      //     }
+                      //     if (state.error != null) {
+                      //       return Text('오류: ${state.error}');
+                      //     }
+                      //     if (state.recommendation == null) {
+                      //       return const Text('추천 메시지가 없습니다');
+                      //     }
+                      //     return Column(
+                      //       children: state.recommendation!.recommendations.map((option) {
+                      //         return AIRecommendationCard(
+                      //           option: option,
+                      //           onCopy: () {
+                      //             // 클립보드에 복사
+                      //             Clipboard.setData(ClipboardData(text: option.message));
+                      //             ScaffoldMessenger.of(context).showSnackBar(
+                      //               const SnackBar(content: Text('메시지가 복사되었습니다')),
+                      //             );
+                      //           },
+                      //         );
+                      //       }).toList(),
+                      //     );
+                      //   },
+                      // ),
+                      const Text('AI 추천 기능은 실제 데이터 연동 후 활성화됩니다'),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          );
-        },
-      ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }

@@ -14,8 +14,10 @@ import '../../data/datasources/remote/firebase_datasource.dart';
 import '../../data/repositories/conversation_repository_impl.dart';
 import '../../data/repositories/profile_repository_impl.dart';
 import '../../data/services/ai/gemini_service.dart';
+import '../../data/repositories/ai_repository_impl.dart';
 import '../../domain/repositories/conversation_repository.dart';
 import '../../domain/repositories/profile_repository.dart';
+import '../../domain/repositories/ai_repository.dart';
 
 /// 네트워크 정보 Provider
 final networkInfoProvider = Provider<NetworkInfo>((ref) {
@@ -112,6 +114,16 @@ final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
 final geminiServiceProvider = Provider<GeminiService>((ref) {
   final dio = ref.watch(dioProvider);
   // TODO: API 키는 환경 변수나 설정에서 가져오기
-  const apiKey = 'YOUR_GEMINI_API_KEY'; // 실제 사용 시 보안 처리 필요
+  // 실제 사용 시 보안 처리 필요 (flutter_dotenv 또는 환경 변수 사용)
+  const apiKey = String.fromEnvironment('GEMINI_API_KEY', defaultValue: '');
+  if (apiKey.isEmpty) {
+    throw Exception('GEMINI_API_KEY 환경 변수가 설정되지 않았습니다.');
+  }
   return GeminiService(dio: dio, apiKey: apiKey);
+});
+
+/// AI 리포지토리 Provider
+final aiRepositoryProvider = Provider<AIRepository>((ref) {
+  final geminiService = ref.watch(geminiServiceProvider);
+  return AIRepositoryImpl(geminiService: geminiService);
 });

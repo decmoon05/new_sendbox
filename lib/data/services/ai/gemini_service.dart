@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import '../../../core/constants/api_constants.dart';
 import '../../../core/errors/exceptions.dart';
 import '../../../domain/entities/ai_recommendation.dart';
 import '../../../domain/entities/conversation.dart';
 import '../../../domain/entities/contact_profile.dart';
+import '../../../domain/entities/message.dart';
 
 /// Google Gemini AI 서비스
 class GeminiService {
@@ -111,26 +113,38 @@ Return the recommendations as a JSON array:
       final content = candidates.first['content']['parts'].first['text'] as String;
       
       // JSON 배열 추출 (마크다운 코드 블록 제거)
-      final jsonMatch = RegExp(r'\[.*\]', dotAll: true).firstMatch(content);
-      if (jsonMatch == null) {
-        throw Exception('Invalid response format');
+      var jsonString = content.trim();
+      
+      // 마크다운 코드 블록 제거
+      jsonString = jsonString.replaceAll(RegExp(r'```json\n?'), '');
+      jsonString = jsonString.replaceAll(RegExp(r'```\n?'), '');
+      jsonString = jsonString.trim();
+      
+      // JSON 배열 부분만 추출 (대괄호로 시작하는 부분)
+      final jsonMatch = RegExp(r'\[.*\]', dotAll: true).firstMatch(jsonString);
+      if (jsonMatch != null) {
+        jsonString = jsonMatch.group(0)!;
       }
       
-      final jsonString = jsonMatch.group(0)!;
-      final recommendationsData = (jsonString as dynamic) as List; // TODO: 실제 JSON 파싱
+      // JSON 파싱
+      final recommendationsData = jsonDecode(jsonString) as List;
       
       final recommendations = <MessageOption>[];
       for (int i = 0; i < recommendationsData.length; i++) {
         final data = recommendationsData[i] as Map<String, dynamic>;
         recommendations.add(
           MessageOption(
-            id: 'option_$i',
-            message: data['message'] as String,
-            tone: data['tone'] as String,
-            reason: data['reason'] as String,
+            id: 'option_${DateTime.now().millisecondsSinceEpoch}_$i',
+            message: data['message'] as String? ?? '',
+            tone: data['tone'] as String? ?? 'casual',
+            reason: data['reason'] as String? ?? '상황에 맞는 메시지',
             confidence: 80,
           ),
         );
+      }
+      
+      if (recommendations.isEmpty) {
+        throw Exception('추천 메시지가 생성되지 않았습니다.');
       }
 
       return AIRecommendation(
