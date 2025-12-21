@@ -1,5 +1,5 @@
-import '../../../domain/entities/message.dart';
-import '../../../domain/entities/conversation.dart';
+import '../../../../domain/entities/message.dart';
+import '../../../../domain/entities/conversation.dart';
 import 'sms_service.dart';
 
 /// SMS 플랫폼 어댑터
