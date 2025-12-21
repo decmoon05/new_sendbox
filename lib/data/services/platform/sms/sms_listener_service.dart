@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import '../../../domain/entities/conversation.dart';
 import '../../../domain/entities/message.dart';
+import '../../../domain/entities/contact_profile.dart';
 import '../../../domain/repositories/conversation_repository.dart';
 import '../../../domain/repositories/profile_repository.dart';
 import 'sms_platform_adapter.dart';
@@ -15,7 +16,7 @@ class SmsListenerService {
   final ConversationRepository conversationRepository;
   final ProfileRepository profileRepository;
   
-  static const MethodChannel _channel = MethodChannel('com.sendbox.app/sms');
+  static const EventChannel _eventChannel = EventChannel('com.sendbox.app/sms/events');
   StreamSubscription<dynamic>? _smsSubscription;
 
   SmsListenerService({
@@ -31,8 +32,8 @@ class SmsListenerService {
       // Android에서 SMS 수신 대기 시작
       await smsService.startListening();
       
-      // MethodChannel을 통해 SMS 수신 이벤트 구독
-      _smsSubscription = _channel.receiveBroadcastStream().listen(
+      // EventChannel을 통해 SMS 수신 이벤트 구독
+      _smsSubscription = _eventChannel.receiveBroadcastStream().listen(
         _handleSmsReceived,
         onError: (error) {
           // 에러 처리
@@ -86,15 +87,21 @@ class SmsListenerService {
       profilesResult.fold(
         (_) {},
         (profiles) {
-          final profile = profiles.firstWhere(
+          // 전화번호로 프로필 찾기
+          final matchingProfile = profiles.firstWhere(
             (p) => p.phoneNumber == phoneNumber,
             orElse: () => profiles.firstWhere(
               (p) => p.platforms.any((platform) => 
                 platform.platform == 'sms' && platform.identifier == phoneNumber),
-              orElse: () => profiles.first, // 첫 번째 프로필 (임시)
+              orElse: () => profiles.isNotEmpty ? profiles.first : ContactProfile(
+                id: phoneNumber,
+                name: phoneNumber,
+                createdAt: DateTime.now(),
+                updatedAt: DateTime.now(),
+              ),
             ),
           );
-          contactName = profile.name;
+          contactName = matchingProfile.name;
         },
       );
 
@@ -164,4 +171,3 @@ class SmsListenerService {
     }
   }
 }
-

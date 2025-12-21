@@ -6,9 +6,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.Telephony
 import android.telephony.SmsMessage
-import io.flutter.plugin.common.MethodChannel
 
-class SmsReceiver(private val channel: MethodChannel) : BroadcastReceiver() {
+typealias SmsReceivedCallback = (String, String, Long) -> Unit
+
+class SmsReceiver(private val onSmsReceived: SmsReceivedCallback) : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == Telephony.Sms.Intents.SMS_RECEIVED_ACTION) {
             val bundle: Bundle? = intent.extras
@@ -27,12 +28,8 @@ class SmsReceiver(private val channel: MethodChannel) : BroadcastReceiver() {
                             val messageBody = it.messageBody
                             val timestamp = it.timestampMillis
                             
-                            // Flutter에 SMS 수신 알림
-                            channel?.invokeMethod("onSmsReceived", mapOf(
-                                "phoneNumber" to phoneNumber,
-                                "message" to messageBody,
-                                "timestamp" to timestamp
-                            ))
+                            // 콜백을 통해 MainActivity로 SMS 수신 알림
+                            onSmsReceived(phoneNumber, messageBody, timestamp)
                         }
                     }
                 }
@@ -40,4 +37,3 @@ class SmsReceiver(private val channel: MethodChannel) : BroadcastReceiver() {
         }
     }
 }
-

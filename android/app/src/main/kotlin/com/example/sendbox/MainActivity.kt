@@ -4,18 +4,43 @@ import android.content.IntentFilter
 import android.provider.Telephony
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity: FlutterActivity() {
     private val CHANNEL = "com.sendbox.app/sms"
+    private val EVENT_CHANNEL = "com.sendbox.app/sms/events"
     private lateinit var smsReceiver: SmsReceiver
     private lateinit var smsChannel: MethodChannel
+    private lateinit var eventChannel: EventChannel
+    private var eventSink: EventChannel.EventSink? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         
         smsChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
-        smsReceiver = SmsReceiver(smsChannel)
+        eventChannel = EventChannel(flutterEngine.dartExecutor.binaryMessenger, EVENT_CHANNEL)
+        
+        // EventChannel 스트림 핸들러 설정
+        eventChannel.setStreamHandler(object : EventChannel.StreamHandler {
+            override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+                eventSink = events
+            }
+
+            override fun onCancel(arguments: Any?) {
+                eventSink = null
+            }
+        })
+        
+        smsReceiver = SmsReceiver { phoneNumber, message, timestamp ->
+            // SMS 수신 시 EventChannel을 통해 Flutter로 전달
+            val data = mapOf(
+                "phoneNumber" to phoneNumber,
+                "message" to message,
+                "timestamp" to timestamp
+            )
+            eventSink?.success(data)
+        }
         
         // SMS 수신 대기 시작
         val filter = IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION)
@@ -25,6 +50,8 @@ class MainActivity: FlutterActivity() {
         smsChannel.setMethodCallHandler { call, result ->
             when (call.method) {
                 "sendSms" -> {
+                    val phoneNumber = call.argument<String>("phoneNumber") ?: ""
+                    val message = call.argument<String>("message") ?: ""
                     // TODO: SMS 전송 구현
                     result.success(false)
                 }
