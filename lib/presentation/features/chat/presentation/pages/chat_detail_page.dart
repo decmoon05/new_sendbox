@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../domain/entities/conversation.dart';
 import '../../../../../domain/entities/message.dart';
@@ -309,7 +310,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                               Navigator.pop(context);
                             },
                             onCopy: () {
-                              // TODO: 클립보드 복사 구현
+                              Clipboard.setData(ClipboardData(text: option.message));
                               context.showSnackBar('메시지가 복사되었습니다');
                             },
                           );

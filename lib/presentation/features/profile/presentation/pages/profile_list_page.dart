@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/profile_provider.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/theme/app_colors.dart';
+import '../../../routes/route_names.dart';
 
 /// 프로필 목록 페이지
 class ProfileListPage extends ConsumerWidget {
@@ -189,7 +190,11 @@ class _ProfileListItem extends StatelessWidget {
         ],
       ),
       onTap: () {
-        // TODO: 프로필 상세 페이지로 이동
+        Navigator.pushNamed(
+          context,
+          RouteNames.profileDetail,
+          arguments: profile.id,
+        );
       },
     );
   }
