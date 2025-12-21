@@ -190,6 +190,65 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
     });
   }
 
+  void _showProfileDetail(BuildContext context, ChatDetailState state) {
+    final conversation = state.conversation;
+    if (conversation == null) {
+      context.showSnackBar('대화 정보를 불러올 수 없습니다');
+      return;
+    }
+
+    // 프로필 가져오기 (contactId로 검색)
+    final profileRepository = ref.read(profileRepositoryProvider);
+    profileRepository.getProfiles().then((result) {
+      result.fold(
+        (failure) {
+          context.showSnackBar('프로필을 찾을 수 없습니다: ${failure.message}');
+        },
+        (profiles) {
+          // 연락처 이름으로 프로필 찾기
+          ContactProfile? matchingProfile;
+          try {
+            matchingProfile = profiles.firstWhere(
+              (profile) => profile.name == conversation.contactId ||
+                  profile.platforms.any(
+                    (platform) => platform.identifier == conversation.contactId ||
+                        platform.displayName == conversation.contactId,
+                  ),
+            );
+          } catch (e) {
+            // 이름으로 못 찾으면 전화번호로 찾기
+            try {
+              matchingProfile = profiles.firstWhere(
+                (profile) => profile.phoneNumber == conversation.contactId,
+              );
+            } catch (e2) {
+              // 프로필이 없으면 기본 프로필 생성
+              matchingProfile = ContactProfile(
+                id: conversation.contactId,
+                name: conversation.contactId,
+                platforms: [
+                  PlatformIdentifier(
+                    platform: conversation.platform,
+                    identifier: conversation.contactId,
+                    displayName: conversation.contactId,
+                  ),
+                ],
+                createdAt: DateTime.now(),
+                updatedAt: DateTime.now(),
+              );
+            }
+          }
+
+          Navigator.pushNamed(
+            context,
+            RouteNames.profileDetail,
+            arguments: matchingProfile.id,
+          );
+        },
+      );
+    });
+  }
+
   void _showAIRecommendation(BuildContext context) {
     final conversation = ref.read(chatDetailProvider(widget.conversationId)).conversation;
     if (conversation == null) {
