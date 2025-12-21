@@ -148,6 +148,153 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       },
     );
   }
+
+  Widget _buildBody(BuildContext context, ChatState state) {
+    if (state.isLoading && state.conversations.isEmpty) {
+      return const ConversationListSkeleton();
+    }
+
+    if (state.error != null) {
+      return ErrorDisplayWidget.dataLoad(
+        onRetry: () {
+          ref.read(chatProvider.notifier).loadConversations();
+        },
+        message: state.error,
+      );
+    }
+
+    if (state.conversations.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.chat_bubble_outline,
+              size: 64,
+              color: AppColors.textSecondary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              '대화가 없습니다',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '새로운 대화를 시작해보세요',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pushNamed(context, RouteNames.conversationCreate);
+              },
+              icon: const Icon(Icons.add),
+              label: const Text('새 대화 시작'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: state.conversations.length,
+      itemExtent: 80.0, // 성능 최적화
+      cacheExtent: 400, // 성능 최적화
+      itemBuilder: (context, index) {
+        final conversation = state.conversations[index];
+        return _ConversationListItemWithActions(
+          conversation: conversation,
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              RouteNames.chatDetail,
+              arguments: conversation.id,
+            );
+          },
+          onLongPress: () => _showConversationOptions(context, conversation),
+        );
+      },
+    );
+  }
+
+  Widget _buildSearchResults(BuildContext context, ChatSearchState searchState) {
+    if (searchState.isSearching) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (searchState.error != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.error_outline,
+              size: 64,
+              color: AppColors.error,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              searchState.error!,
+              style: Theme.of(context).textTheme.bodyLarge,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (searchState.results.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.search_off,
+              size: 64,
+              color: AppColors.textSecondary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              '검색 결과가 없습니다',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '"${searchState.query}"에 대한 결과를 찾을 수 없습니다',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: searchState.results.length,
+      itemExtent: 80.0, // 성능 최적화
+      cacheExtent: 400, // 성능 최적화
+      itemBuilder: (context, index) {
+        final conversation = searchState.results[index];
+        return _ConversationListItemWithActions(
+          conversation: conversation,
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              RouteNames.chatDetail,
+              arguments: conversation.id,
+            );
+          },
+          onLongPress: () => _showConversationOptions(context, conversation),
+        );
+      },
+    );
+  }
 }
 
 /// 대화 목록 아이템
@@ -230,6 +377,89 @@ class _ConversationListItem extends StatelessWidget {
       },
     );
   }
+}
+
+class _ConversationListItemWithActions extends StatelessWidget {
+  final Conversation conversation;
+  final VoidCallback onTap;
+  final VoidCallback onLongPress;
+
+  const _ConversationListItemWithActions({
+    required this.conversation,
+    required this.onTap,
+    required this.onLongPress,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final lastMessage = conversation.lastMessage;
+
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundColor: AppColors.primary,
+        child: Text(
+          conversation.contactId[0].toUpperCase(),
+          style: const TextStyle(color: Colors.white),
+        ),
+      ),
+      title: Row(
+        children: [
+          Expanded(
+            child: Text(
+              conversation.contactId,
+              style: Theme.of(context).textTheme.titleMedium,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          if (conversation.isPinned)
+            const Icon(
+              Icons.push_pin,
+              size: 16,
+              color: AppColors.primary,
+            ),
+        ],
+      ),
+      subtitle: Text(
+        lastMessage?.content ?? '메시지 없음',
+        style: Theme.of(context).textTheme.bodySmall,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(
+            conversation.lastMessageAt.formattedTime,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          if (conversation.unreadCount > 0) ...[
+            const SizedBox(height: 4),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                conversation.unreadCount > 99
+                    ? '99+'
+                    : conversation.unreadCount.toString(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+      onTap: onTap,
+      onLongPress: onLongPress,
+    );
+  }
+}
 
   Widget _buildSearchResults(BuildContext context, ChatSearchState searchState) {
     if (searchState.isSearching) {
