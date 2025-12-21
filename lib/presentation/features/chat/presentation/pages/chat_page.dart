@@ -17,6 +17,10 @@ class ChatPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final chatState = ref.watch(chatProvider);
     final searchState = ref.watch(chatSearchProvider);
+    final filterState = ref.watch(chatFilterProvider);
+    
+    // 필터링된 대화 목록
+    final filteredConversations = ref.watch(filteredConversationsProvider(chatState.conversations));
 
     return Scaffold(
       appBar: AppBar(
@@ -65,7 +69,7 @@ class ChatPage extends ConsumerWidget {
         onRefresh: () => ref.read(chatProvider.notifier).refresh(),
         child: searchState.query.isNotEmpty
             ? _buildSearchResults(context, searchState)
-            : _buildBody(context, chatState),
+            : _buildBody(context, chatState.copyWith(conversations: filteredConversations)),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
