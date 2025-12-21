@@ -23,11 +23,18 @@ class AppInit {
     try {
       // Firebase가 이미 초기화되어 있는지 확인
       if (Firebase.apps.isEmpty) {
-        await Firebase.initializeApp();
-        debugPrint('Firebase 초기화 완료');
+        // google-services.json 파일이 있는지 확인
+        // 없으면 Firebase 초기화를 건너뛰고 오프라인 모드로 실행
+        try {
+          await Firebase.initializeApp();
+          debugPrint('Firebase 초기화 완료');
+        } catch (e) {
+          debugPrint('Firebase 초기화 실패 (오프라인 모드로 실행): $e');
+          // Firebase 없이 계속 실행
+        }
       }
     } catch (e) {
-      debugPrint('Firebase 초기화 실패: $e');
+      debugPrint('Firebase 초기화 실패 (오프라인 모드로 실행): $e');
       // Firebase 초기화 실패해도 앱은 계속 실행 (오프라인 모드)
     }
   }

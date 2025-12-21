@@ -30,18 +30,37 @@ final networkInfoProvider = Provider<NetworkInfo>((ref) {
 final isarProvider = StateProvider<Isar?>((ref) => null);
 
 /// Firebase Firestore Provider
-final firestoreProvider = Provider<FirebaseFirestore>((ref) {
-  return FirebaseFirestore.instance;
+/// Firebase가 초기화되지 않은 경우 예외를 발생시키지 않고 안전하게 처리
+final firestoreProvider = Provider<FirebaseFirestore?>((ref) {
+  try {
+    if (Firebase.apps.isEmpty) {
+      return null;
+    }
+    return FirebaseFirestore.instance;
+  } catch (e) {
+    return null;
+  }
 });
 
 /// Firebase Auth Provider
-final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
-  return FirebaseAuth.instance;
+/// Firebase가 초기화되지 않은 경우 예외를 발생시키지 않고 안전하게 처리
+final firebaseAuthProvider = Provider<FirebaseAuth?>((ref) {
+  try {
+    if (Firebase.apps.isEmpty) {
+      return null;
+    }
+    return FirebaseAuth.instance;
+  } catch (e) {
+    return null;
+  }
 });
 
 /// 현재 사용자 ID Provider
 final currentUserIdProvider = Provider<String?>((ref) {
   final auth = ref.watch(firebaseAuthProvider);
+  if (auth == null) {
+    return null;
+  }
   return auth.currentUser?.uid;
 });
 
