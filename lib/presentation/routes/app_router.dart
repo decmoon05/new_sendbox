@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'route_names.dart';
+import 'page_route_builder.dart';
 import '../features/chat/presentation/pages/chat_page.dart';
 import '../features/chat/presentation/pages/conversation_create_page.dart';
 import '../features/chat/presentation/pages/chat_detail_page.dart';
@@ -28,8 +29,8 @@ class AppRouter {
         );
 
       case RouteNames.conversationCreate:
-        return MaterialPageRoute(
-          builder: (_) => const ConversationCreatePage(),
+        return PageRouteBuilder.slideAndFade(
+          const ConversationCreatePage(),
         );
 
       case RouteNames.chatDetail:
@@ -45,22 +46,20 @@ class AppRouter {
         );
 
       case RouteNames.profileCreate:
-        return MaterialPageRoute(
-          builder: (_) => const ProfileCreatePage(),
+        return PageRouteBuilder.slideAndFade(
+          const ProfileCreatePage(),
         );
 
       case RouteNames.profileDetail:
         final id = settings.arguments as String? ?? '';
-        return MaterialPageRoute(
-          builder: (_) => ProfileDetailPage(profileId: id),
-          settings: settings,
+        return PageRouteBuilder.slideRightToLeft(
+          ProfileDetailPage(profileId: id),
         );
 
       case RouteNames.profileEdit:
         final id = settings.arguments as String? ?? '';
-        return MaterialPageRoute(
-          builder: (_) => ProfileEditPage(profileId: id),
-          settings: settings,
+        return PageRouteBuilder.slideAndFade(
+          ProfileEditPage(profileId: id),
         );
 
           case RouteNames.settings:
@@ -68,10 +67,10 @@ class AppRouter {
               builder: (_) => const SettingsPage(),
             );
 
-          case RouteNames.platformSettings:
-            return MaterialPageRoute(
-              builder: (_) => const PlatformSettingsPage(),
-            );
+      case RouteNames.platformSettings:
+        return PageRouteBuilder.slideRightToLeft(
+          const PlatformSettingsPage(),
+        );
 
       default:
         return MaterialPageRoute(
