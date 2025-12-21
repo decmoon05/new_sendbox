@@ -148,6 +148,309 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       },
     );
   }
+
+  void _showFilterBottomSheet(BuildContext context) {
+    final filterState = ref.read(chatFilterProvider);
+    final filterNotifier = ref.read(chatFilterProvider.notifier);
+
+    // 사용 가능한 플랫폼 목록 가져오기
+    final conversations = ref.read(chatProvider).conversations;
+    final platforms = conversations.map((c) => c.platform).toSet().toList()..sort();
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            String? selectedPlatform = filterState.platform;
+            bool? unreadOnly = filterState.unreadOnly;
+            bool pinnedOnly = filterState.pinnedOnly;
+
+            return Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        '필터',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          filterNotifier.clearFilters();
+                          Navigator.pop(context);
+                        },
+                        child: const Text('초기화'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  
+                  // 플랫폼 필터
+                  const Text(
+                    '플랫폼',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      ChoiceChip(
+                        label: const Text('전체'),
+                        selected: selectedPlatform == null,
+                        onSelected: (selected) {
+                          setState(() {
+                            selectedPlatform = selected ? null : selectedPlatform;
+                          });
+                        },
+                      ),
+                      ...platforms.map((platform) {
+                        return ChoiceChip(
+                          label: Text(_getPlatformName(platform)),
+                          selected: selectedPlatform == platform,
+                          onSelected: (selected) {
+                            setState(() {
+                              selectedPlatform = selected ? platform : null;
+                            });
+                          },
+                        );
+                      }),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  
+                  // 읽지 않은 메시지만 필터
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: unreadOnly ?? false,
+                        onChanged: (value) {
+                          setState(() {
+                            unreadOnly = value;
+                          });
+                        },
+                      ),
+                      const Text('읽지 않은 메시지만'),
+                    ],
+                  ),
+                  
+                  // 고정된 대화만 필터
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: pinnedOnly,
+                        onChanged: (value) {
+                          setState(() {
+                            pinnedOnly = value ?? false;
+                          });
+                        },
+                      ),
+                      const Text('고정된 대화만'),
+                    ],
+                  ),
+                  
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () {
+                      filterNotifier.setFilters(
+                        platform: selectedPlatform,
+                        unreadOnly: unreadOnly,
+                        pinnedOnly: pinnedOnly,
+                      );
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 48),
+                    ),
+                    child: const Text('적용'),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showSortBottomSheet(BuildContext context) {
+    final sortState = ref.read(chatSortProvider);
+    final sortNotifier = ref.read(chatSortProvider.notifier);
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                '정렬',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 24),
+              RadioListTile<ChatSortBy>(
+                title: const Text('최신순'),
+                value: ChatSortBy.latest,
+                groupValue: sortState.sortBy,
+                onChanged: (value) {
+                  if (value != null) {
+                    sortNotifier.setSortBy(value);
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              RadioListTile<ChatSortBy>(
+                title: const Text('이름순'),
+                value: ChatSortBy.name,
+                groupValue: sortState.sortBy,
+                onChanged: (value) {
+                  if (value != null) {
+                    sortNotifier.setSortBy(value);
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              RadioListTile<ChatSortBy>(
+                title: const Text('읽지 않은 메시지 먼저'),
+                value: ChatSortBy.unreadFirst,
+                groupValue: sortState.sortBy,
+                onChanged: (value) {
+                  if (value != null) {
+                    sortNotifier.setSortBy(value);
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              RadioListTile<ChatSortBy>(
+                title: const Text('고정된 대화가 위에'),
+                value: ChatSortBy.pinnedAtTop,
+                groupValue: sortState.sortBy,
+                onChanged: (value) {
+                  if (value != null) {
+                    sortNotifier.setSortBy(value);
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showConversationOptions(BuildContext context, Conversation conversation) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(conversation.isPinned ? Icons.push_pin : Icons.push_pin_outlined),
+                title: Text(conversation.isPinned ? '고정 해제' : '대화 고정'),
+                onTap: () {
+                  Navigator.pop(context);
+                  ref.read(chatProvider.notifier).togglePin(conversation.id, !conversation.isPinned);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.mark_chat_read_outlined),
+                title: const Text('모두 읽음으로 표시'),
+                onTap: () {
+                  Navigator.pop(context);
+                  ref.read(chatProvider.notifier).markAsRead(conversation.id);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.delete_outline, color: AppColors.error),
+                title: const Text('대화 삭제', style: TextStyle(color: AppColors.error)),
+                onTap: () {
+                  Navigator.pop(context);
+                  _showDeleteConfirmation(context, conversation);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showDeleteConfirmation(BuildContext context, Conversation conversation) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('대화 삭제'),
+          content: Text('${conversation.contactId} 님과의 대화를 삭제하시겠습니까?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('취소'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                ref.read(chatProvider.notifier).deleteConversation(conversation.id);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('대화가 삭제되었습니다')),
+                );
+              },
+              child: const Text('삭제', style: TextStyle(color: AppColors.error)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  String _getPlatformName(String platform) {
+    switch (platform.toLowerCase()) {
+      case 'sms':
+        return 'SMS';
+      case 'kakao':
+      case 'kakaotalk':
+        return '카카오톡';
+      case 'discord':
+        return '디스코드';
+      case 'instagram':
+        return '인스타그램';
+      case 'telegram':
+        return '텔레그램';
+      default:
+        return platform;
+    }
+  }
 }
 
 /// 대화 목록 아이템
