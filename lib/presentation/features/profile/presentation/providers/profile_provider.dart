@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../domain/entities/contact_profile.dart';
+import '../../../../../domain/repositories/profile_repository.dart';
 import '../../../../../domain/usecases/profile/get_profile.dart';
 import '../../../../../core/di/providers.dart';
 
