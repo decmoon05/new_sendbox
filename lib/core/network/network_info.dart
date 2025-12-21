@@ -39,20 +39,7 @@ class NetworkInfoImpl implements NetworkInfo {
 
   @override
   Stream<ConnectivityResult> get onConnectivityChanged {
-    return _connectivity.onConnectivityChanged.map((result) {
-      // connectivity_plus 5.0.2 onConnectivityChanged returns Stream<List<ConnectivityResult>>
-      // but actually returns single ConnectivityResult at runtime
-      if (result is List<ConnectivityResult>) {
-        if (result.isEmpty || result.every((r) => r == ConnectivityResult.none)) {
-          return ConnectivityResult.none;
-        }
-        return result.firstWhere(
-          (r) => r != ConnectivityResult.none,
-          orElse: () => ConnectivityResult.none,
-        );
-      }
-      // Single ConnectivityResult
-      return result as ConnectivityResult;
-    });
+    // connectivity_plus 5.0.2 onConnectivityChanged returns Stream<ConnectivityResult> (single value)
+    return _connectivity.onConnectivityChanged;
   }
 }
