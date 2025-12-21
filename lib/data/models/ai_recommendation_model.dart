@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 import '../../domain/entities/ai_recommendation.dart';
+import '../utils/json_helper.dart';
 
 part 'ai_recommendation_model.g.dart';
 
@@ -58,8 +59,7 @@ class AIRecommendationModel {
   }
 
   List<MessageOption> _parseRecommendations(String json) {
-    // TODO: 실제 JSON 파싱 구현
-    return [];
+    return JsonHelper.decodeMessageOptions(json);
   }
 
   RecommendationType _parseType(String type) {
@@ -74,8 +74,7 @@ class AIRecommendationModel {
   }
 
   String _encodeRecommendations(List<MessageOption> recommendations) {
-    // TODO: 실제 JSON 인코딩 구현
-    return '';
+    return JsonHelper.encodeMessageOptions(recommendations);
   }
 
   String _encodeType(RecommendationType type) {

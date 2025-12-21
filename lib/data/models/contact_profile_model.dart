@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 import '../../domain/entities/contact_profile.dart';
+import '../utils/json_helper.dart';
 
 part 'contact_profile_model.g.dart';
 
@@ -76,35 +77,29 @@ class ContactProfileModel {
       ..updatedAt = profile.updatedAt;
   }
 
-  // JSON 파싱 헬퍼 (향후 실제 JSON 직렬화 라이브러리 사용)
+  // JSON 파싱 헬퍼
   List<PlatformIdentifier> _parsePlatforms(String json) {
-    // TODO: 실제 JSON 파싱 구현
-    return [];
+    return JsonHelper.decodePlatforms(json);
   }
 
   ProfileAnalysis? _parseAiAnalysis(String json) {
-    // TODO: 실제 JSON 파싱 구현
-    return null;
+    return JsonHelper.decodeProfileAnalysis(json);
   }
 
   List<String> _parseTags(String json) {
-    // TODO: 실제 JSON 파싱 구현
-    return [];
+    return JsonHelper.decodeStringList(json);
   }
 
   String _encodePlatforms(List<PlatformIdentifier> platforms) {
-    // TODO: 실제 JSON 인코딩 구현
-    return '';
+    return JsonHelper.encodePlatforms(platforms);
   }
 
   String _encodeAiAnalysis(ProfileAnalysis analysis) {
-    // TODO: 실제 JSON 인코딩 구현
-    return '';
+    return JsonHelper.encodeProfileAnalysis(analysis);
   }
 
   String _encodeTags(List<String> tags) {
-    // TODO: 실제 JSON 인코딩 구현
-    return '';
+    return JsonHelper.encodeStringList(tags);
   }
 }
 

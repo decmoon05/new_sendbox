@@ -68,25 +68,21 @@ class MessageModel {
           message.metadata.isNotEmpty ? _encodeMetadata(message.metadata) : null;
   }
 
-  // JSON 파싱 헬퍼 (향후 실제 JSON 직렬화 라이브러리 사용 가능)
+  // JSON 파싱 헬퍼
   List<Attachment> _parseAttachments(String json) {
-    // TODO: 실제 JSON 파싱 구현
-    return [];
+    return JsonHelper.decodeAttachments(json);
   }
 
   Map<String, dynamic> _parseMetadata(String json) {
-    // TODO: 실제 JSON 파싱 구현
-    return {};
+    return JsonHelper.decodeMetadata(json);
   }
 
   String _encodeAttachments(List<Attachment> attachments) {
-    // TODO: 실제 JSON 인코딩 구현
-    return '';
+    return JsonHelper.encodeAttachments(attachments);
   }
 
   String _encodeMetadata(Map<String, dynamic> metadata) {
-    // TODO: 실제 JSON 인코딩 구현
-    return '';
+    return JsonHelper.encodeMetadata(metadata);
   }
 }
 
