@@ -409,9 +409,10 @@ class SettingsPage extends ConsumerWidget {
           const SnackBar(content: Text('로그아웃되었습니다')),
         );
         
-        // 로그인 화면으로 이동
+        // 로그인 화면으로 이동 (홈 화면으로 임시 이동)
+        // TODO: 로그인 화면이 구현되면 RouteNames.login 사용
         Navigator.of(context).pushNamedAndRemoveUntil(
-          '/login',
+          RouteNames.home,
           (route) => false,
         );
       }
