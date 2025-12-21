@@ -16,38 +16,57 @@ class NetworkInfoImpl implements NetworkInfo {
 
   @override
   Future<bool> get isConnected async {
-    final result = await _connectivity.checkConnectivity();
-    // connectivity_plus 5.0.2 returns List<ConnectivityResult>
-    final results = result as List<ConnectivityResult>;
-    return results.any((r) => r != ConnectivityResult.none);
+    try {
+      final results = await _connectivity.checkConnectivity();
+      // connectivity_plus 5.0.2+ returns List<ConnectivityResult>
+      if (results is List<ConnectivityResult>) {
+        return results.any((result) => result != ConnectivityResult.none);
+      }
+      // Fallback for older versions or single result
+      return results != ConnectivityResult.none;
+    } catch (e) {
+      // 에러 발생 시 연결 안됨으로 간주
+      return false;
+    }
   }
 
   @override
   Future<ConnectivityResult> get connectivityResult async {
-    final result = await _connectivity.checkConnectivity();
-    // connectivity_plus 5.0.2 returns List<ConnectivityResult>
-    final results = result as List<ConnectivityResult>;
-    if (results.isEmpty || results.every((r) => r == ConnectivityResult.none)) {
+    try {
+      final results = await _connectivity.checkConnectivity();
+      // connectivity_plus 5.0.2+ returns List<ConnectivityResult>
+      if (results is List<ConnectivityResult>) {
+        if (results.isEmpty || results.every((r) => r == ConnectivityResult.none)) {
+          return ConnectivityResult.none;
+        }
+        // 첫 번째 none이 아닌 결과 반환
+        return results.firstWhere(
+          (r) => r != ConnectivityResult.none,
+          orElse: () => ConnectivityResult.none,
+        );
+      }
+      // Fallback for older versions
+      return results as ConnectivityResult;
+    } catch (e) {
       return ConnectivityResult.none;
     }
-    // 첫 번째 none이 아닌 결과 반환
-    return results.firstWhere(
-      (r) => r != ConnectivityResult.none,
-      orElse: () => ConnectivityResult.none,
-    );
   }
 
   @override
   Stream<ConnectivityResult> get onConnectivityChanged {
     return _connectivity.onConnectivityChanged.map((results) {
-      final resultList = results as List<ConnectivityResult>;
-      if (resultList.isEmpty || resultList.every((r) => r == ConnectivityResult.none)) {
-        return ConnectivityResult.none;
+      // connectivity_plus 5.0.2+ returns List<ConnectivityResult>
+      if (results is List<ConnectivityResult>) {
+        if (results.isEmpty || results.every((r) => r == ConnectivityResult.none)) {
+          return ConnectivityResult.none;
+        }
+        return results.firstWhere(
+          (r) => r != ConnectivityResult.none,
+          orElse: () => ConnectivityResult.none,
+        );
       }
-      return resultList.firstWhere(
-        (r) => r != ConnectivityResult.none,
-        orElse: () => ConnectivityResult.none,
-      );
+      // Fallback for older versions
+      return results as ConnectivityResult;
     });
   }
 }
