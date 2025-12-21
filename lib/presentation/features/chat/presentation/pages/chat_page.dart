@@ -25,7 +25,6 @@ class ChatPage extends ConsumerStatefulWidget {
 class _ChatPageState extends ConsumerState<ChatPage> {
   @override
   Widget build(BuildContext context) {
-    final ref = this.ref;
     final chatState = ref.watch(chatProvider);
     final searchState = ref.watch(chatSearchProvider);
     final filterState = ref.watch(chatFilterProvider);
