@@ -14,9 +14,24 @@ class AppInit {
 
       // 로컬 데이터베이스 초기화
       await _initDatabase();
+      
+      // 권한 요청 (비동기로 처리하여 앱 시작을 막지 않음)
+      _requestPermissions();
     } catch (e) {
       debugPrint('앱 초기화 중 오류 발생: $e');
       rethrow;
+    }
+  }
+
+  /// 권한 요청
+  static Future<void> _requestPermissions() async {
+    try {
+      // SMS 권한 요청 (Android만)
+      if (Platform.isAndroid) {
+        await Permission.sms.request();
+      }
+    } catch (e) {
+      debugPrint('권한 요청 실패: $e');
     }
   }
 
