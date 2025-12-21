@@ -557,4 +557,81 @@ class _ConversationListItem extends StatelessWidget {
       },
     );
   }
+
+  void _showSortBottomSheet(BuildContext context, WidgetRef ref) {
+    final sortState = ref.read(chatSortProvider);
+    final sortNotifier = ref.read(chatSortProvider.notifier);
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      '정렬 기준',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              ),
+              RadioListTile<ConversationSortBy>(
+                title: const Text('최신순'),
+                subtitle: const Text('최근 메시지 순서'),
+                value: ConversationSortBy.recent,
+                groupValue: sortState.sortBy,
+                onChanged: (value) {
+                  if (value != null) {
+                    sortNotifier.setSortBy(value);
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              RadioListTile<ConversationSortBy>(
+                title: const Text('이름순'),
+                subtitle: const Text('연락처 이름 순서'),
+                value: ConversationSortBy.name,
+                groupValue: sortState.sortBy,
+                onChanged: (value) {
+                  if (value != null) {
+                    sortNotifier.setSortBy(value);
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              RadioListTile<ConversationSortBy>(
+                title: const Text('읽지 않은 메시지 우선'),
+                subtitle: const Text('읽지 않은 메시지가 많은 순서'),
+                value: ConversationSortBy.unread,
+                groupValue: sortState.sortBy,
+                onChanged: (value) {
+                  if (value != null) {
+                    sortNotifier.setSortBy(value);
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
