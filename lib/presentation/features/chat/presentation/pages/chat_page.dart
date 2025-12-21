@@ -15,17 +15,39 @@ class ChatPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final chatState = ref.watch(chatProvider);
+    final searchState = ref.watch(chatSearchProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SendBox'),
+        title: searchState.query.isEmpty
+            ? const Text('SendBox')
+            : TextField(
+                autofocus: true,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  hintText: '검색...',
+                  hintStyle: TextStyle(color: Colors.white70),
+                  border: InputBorder.none,
+                ),
+                onChanged: (value) {
+                  ref.read(chatSearchProvider.notifier).search(value);
+                },
+              ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              // TODO: 검색 기능 구현
-            },
-          ),
+          if (searchState.query.isEmpty)
+            IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: () {
+                ref.read(chatSearchProvider.notifier).search('');
+              },
+            )
+          else
+            IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () {
+                ref.read(chatSearchProvider.notifier).clear();
+              },
+            ),
         ],
       ),
       body: RefreshIndicator(

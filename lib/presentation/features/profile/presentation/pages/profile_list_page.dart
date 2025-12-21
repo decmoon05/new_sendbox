@@ -14,22 +14,46 @@ class ProfileListPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileState = ref.watch(profileListProvider);
+    final searchState = ref.watch(profileSearchProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('연락처'),
+        title: searchState.query.isEmpty
+            ? const Text('연락처')
+            : TextField(
+                autofocus: true,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  hintText: '검색...',
+                  hintStyle: TextStyle(color: Colors.white70),
+                  border: InputBorder.none,
+                ),
+                onChanged: (value) {
+                  ref.read(profileSearchProvider.notifier).search(value);
+                },
+              ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              // TODO: 검색 기능 구현
-            },
-          ),
+          if (searchState.query.isEmpty)
+            IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: () {
+                ref.read(profileSearchProvider.notifier).search('');
+              },
+            )
+          else
+            IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () {
+                ref.read(profileSearchProvider.notifier).clear();
+              },
+            ),
         ],
       ),
       body: RefreshIndicator(
         onRefresh: () => ref.read(profileListProvider.notifier).refresh(),
-        child: _buildBody(context, profileState),
+        child: searchState.query.isNotEmpty
+            ? _buildSearchResults(context, searchState)
+            : _buildBody(context, profileState),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
