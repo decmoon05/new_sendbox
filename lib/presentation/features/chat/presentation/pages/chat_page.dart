@@ -540,7 +540,7 @@ class _ConversationListItem extends StatelessWidget {
       builder: (context) {
         return AlertDialog(
           title: const Text('대화 삭제'),
-          content: Text('${conversation.contactId}의 대화를 삭제하시겠습니까?'),
+          content: Text('${conversation.contactId}의 대화를 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -549,10 +549,7 @@ class _ConversationListItem extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                // TODO: 대화 삭제 구현
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('삭제 기능은 아직 구현되지 않았습니다')),
-                );
+                _deleteConversation(context, conversation);
               },
               child: const Text('삭제', style: TextStyle(color: Colors.red)),
             ),
@@ -560,6 +557,28 @@ class _ConversationListItem extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _deleteConversation(BuildContext context, Conversation conversation) {
+    final ref = ProviderScope.containerOf(context);
+    final repository = ref.read(conversationRepositoryProvider);
+    
+    repository.deleteConversation(conversation.id).then((result) {
+      result.fold(
+        (failure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('삭제 실패: ${failure.message}')),
+          );
+        },
+        (_) {
+          // 성공 시 대화 목록 새로고침
+          ref.read(chatProvider.notifier).refresh();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('대화가 삭제되었습니다')),
+          );
+        },
+      );
+    });
   }
 
   void _showSortBottomSheet(BuildContext context, WidgetRef ref) {
