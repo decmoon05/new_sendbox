@@ -131,7 +131,14 @@ class AppTheme {
       backgroundColor: AppColors.surfaceDark,
       foregroundColor: AppColors.textPrimaryDark,
       systemOverlayStyle: SystemUiOverlayStyle.light,
-      titleTextStyle: AppTextStyles.headline3Dark,
+      titleTextStyle: const TextStyle(
+        fontSize: 22,
+        fontWeight: FontWeight.w600,
+        height: 1.3,
+        letterSpacing: 0,
+        color: AppColors.textPrimaryDark,
+        fontFamily: 'Pretendard',
+      ),
     ),
     
     // 카드 테마

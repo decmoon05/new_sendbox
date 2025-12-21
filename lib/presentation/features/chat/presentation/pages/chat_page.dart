@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/chat_provider.dart';
+import '../../../../../domain/entities/conversation.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/datetime_extensions.dart';
 import '../../../../../core/theme/app_colors.dart';
-import '../../../routes/route_names.dart';
+import '../../../../routes/route_names.dart';
 
 /// 채팅 목록 페이지
 class ChatPage extends ConsumerWidget {

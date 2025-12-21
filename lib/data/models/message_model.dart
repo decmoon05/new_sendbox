@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 import '../../domain/entities/message.dart';
+import '../utils/json_helper.dart';
 
 part 'message_model.g.dart';
 
