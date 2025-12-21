@@ -282,6 +282,10 @@ class _ConversationListItem extends StatelessWidget {
 
     return ListView.builder(
       itemCount: searchState.results.length,
+      // 성능 최적화: 각 아이템의 예상 높이 설정 (약 80px)
+      itemExtent: 80,
+      // 캐시 크기 설정
+      cacheExtent: 400,
       itemBuilder: (context, index) {
         final conversation = searchState.results[index];
         return _ConversationListItem(conversation: conversation);
