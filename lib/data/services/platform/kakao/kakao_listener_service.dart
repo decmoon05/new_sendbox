@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import '../../../domain/repositories/conversation_repository.dart';
-import '../../../domain/repositories/profile_repository.dart';
-import '../../../domain/entities/message.dart';
-import '../../../domain/entities/conversation.dart';
+import '../../../../domain/repositories/conversation_repository.dart';
+import '../../../../domain/repositories/profile_repository.dart';
+import '../../../../domain/entities/message.dart';
+import '../../../../domain/entities/conversation.dart';
+import '../../../../domain/entities/contact_profile.dart';
 import 'kakao_platform_adapter.dart';
 
 /// 카카오톡 리스너 서비스
