@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import '../../data/services/storage/isar_storage.dart';
+import '../../core/services/settings_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 

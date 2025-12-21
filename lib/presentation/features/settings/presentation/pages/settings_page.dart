@@ -8,6 +8,8 @@ class SettingsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settingsState = ref.watch(settingsProvider);
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('설정'),
@@ -43,9 +45,9 @@ class SettingsPage extends ConsumerWidget {
             icon: Icons.notifications_outlined,
             title: '푸시 알림',
             subtitle: '새 메시지 알림 받기',
-            value: true, // TODO: 설정에서 가져오기
+            value: settingsState.notificationsEnabled,
             onChanged: (value) {
-              // TODO: 알림 설정 저장
+              ref.read(settingsProvider.notifier).setNotificationsEnabled(value);
             },
           ),
           _buildSwitchTile(
@@ -53,9 +55,9 @@ class SettingsPage extends ConsumerWidget {
             icon: Icons.vibration,
             title: '진동',
             subtitle: '알림 시 진동',
-            value: true, // TODO: 설정에서 가져오기
+            value: settingsState.vibrationEnabled,
             onChanged: (value) {
-              // TODO: 진동 설정 저장
+              ref.read(settingsProvider.notifier).setVibrationEnabled(value);
             },
           ),
           const Divider(),
@@ -67,9 +69,9 @@ class SettingsPage extends ConsumerWidget {
             icon: Icons.auto_awesome,
             title: 'AI 추천 활성화',
             subtitle: '메시지 추천 기능 사용',
-            value: true, // TODO: 설정에서 가져오기
+            value: settingsState.aiRecommendationsEnabled,
             onChanged: (value) {
-              // TODO: AI 추천 설정 저장
+              ref.read(settingsProvider.notifier).setAiRecommendationsEnabled(value);
             },
           ),
           _buildSwitchTile(
@@ -77,9 +79,9 @@ class SettingsPage extends ConsumerWidget {
             icon: Icons.sync,
             title: '자동 동기화',
             subtitle: '클라우드와 자동 동기화',
-            value: true, // TODO: 설정에서 가져오기
+            value: settingsState.autoSyncEnabled,
             onChanged: (value) {
-              // TODO: 자동 동기화 설정 저장
+              ref.read(settingsProvider.notifier).setAutoSyncEnabled(value);
             },
           ),
           _buildListTile(
