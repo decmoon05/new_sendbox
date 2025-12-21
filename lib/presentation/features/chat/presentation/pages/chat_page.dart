@@ -24,6 +24,8 @@ class ChatPage extends ConsumerWidget {
     
     // 필터링된 대화 목록
     final filteredConversations = ref.watch(filteredConversationsProvider(chatState.conversations));
+    // 정렬된 대화 목록 (고정된 대화가 앞에, 선택한 정렬 기준 적용)
+    final sortedConversations = ref.watch(sortedConversationsProvider(filteredConversations));
 
     return Scaffold(
       appBar: AppBar(
