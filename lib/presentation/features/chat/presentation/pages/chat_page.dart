@@ -4,6 +4,7 @@ import '../providers/chat_provider.dart';
 import '../../../../../core/extensions/context_extensions.dart';
 import '../../../../../core/extensions/datetime_extensions.dart';
 import '../../../../../core/theme/app_colors.dart';
+import '../../../routes/route_names.dart';
 
 /// 채팅 목록 페이지
 class ChatPage extends ConsumerWidget {
@@ -182,7 +183,11 @@ class _ConversationListItem extends StatelessWidget {
         ],
       ),
       onTap: () {
-        // TODO: 대화 상세 페이지로 이동
+        Navigator.pushNamed(
+          context,
+          RouteNames.chatDetail,
+          arguments: conversation.id,
+        );
       },
     );
   }

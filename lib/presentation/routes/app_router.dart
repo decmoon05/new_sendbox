@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'route_names.dart';
 import '../features/chat/presentation/pages/chat_page.dart';
+import '../features/chat/presentation/pages/chat_detail_page.dart';
 import '../features/profile/presentation/pages/profile_list_page.dart';
 import '../features/settings/presentation/pages/settings_page.dart';
 
@@ -24,7 +25,7 @@ class AppRouter {
       case RouteNames.chatDetail:
         final id = settings.arguments as String? ?? '';
         return MaterialPageRoute(
-          builder: (_) => const ChatPage(), // TODO: ChatDetailPage 구현
+          builder: (_) => ChatDetailPage(conversationId: id),
           settings: settings,
         );
 
