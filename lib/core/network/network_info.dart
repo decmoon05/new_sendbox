@@ -17,13 +17,14 @@ class NetworkInfoImpl implements NetworkInfo {
   @override
   Future<bool> get isConnected async {
     try {
-      final results = await _connectivity.checkConnectivity();
-      // connectivity_plus 5.0.2+ returns List<ConnectivityResult>
-      if (results is List<ConnectivityResult>) {
-        return results.any((result) => result != ConnectivityResult.none);
+      final result = await _connectivity.checkConnectivity();
+      // connectivity_plus 5.0.2 returns Future<List<ConnectivityResult>>
+      // but actually returns single ConnectivityResult at runtime
+      if (result is List<ConnectivityResult>) {
+        return result.any((r) => r != ConnectivityResult.none);
       }
-      // Fallback for older versions or single result
-      return results != ConnectivityResult.none;
+      // Single ConnectivityResult
+      return result != ConnectivityResult.none;
     } catch (e) {
       // 에러 발생 시 연결 안됨으로 간주
       return false;
@@ -33,20 +34,20 @@ class NetworkInfoImpl implements NetworkInfo {
   @override
   Future<ConnectivityResult> get connectivityResult async {
     try {
-      final results = await _connectivity.checkConnectivity();
-      // connectivity_plus 5.0.2+ returns List<ConnectivityResult>
-      if (results is List<ConnectivityResult>) {
-        if (results.isEmpty || results.every((r) => r == ConnectivityResult.none)) {
+      final result = await _connectivity.checkConnectivity();
+      // connectivity_plus 5.0.2 returns Future<List<ConnectivityResult>>
+      // but actually returns single ConnectivityResult at runtime
+      if (result is List<ConnectivityResult>) {
+        if (result.isEmpty || result.every((r) => r == ConnectivityResult.none)) {
           return ConnectivityResult.none;
         }
-        // 첫 번째 none이 아닌 결과 반환
-        return results.firstWhere(
+        return result.firstWhere(
           (r) => r != ConnectivityResult.none,
           orElse: () => ConnectivityResult.none,
         );
       }
-      // Fallback for older versions
-      return results as ConnectivityResult;
+      // Single ConnectivityResult
+      return result as ConnectivityResult;
     } catch (e) {
       return ConnectivityResult.none;
     }
@@ -54,19 +55,20 @@ class NetworkInfoImpl implements NetworkInfo {
 
   @override
   Stream<ConnectivityResult> get onConnectivityChanged {
-    return _connectivity.onConnectivityChanged.map((results) {
-      // connectivity_plus 5.0.2+ returns List<ConnectivityResult>
-      if (results is List<ConnectivityResult>) {
-        if (results.isEmpty || results.every((r) => r == ConnectivityResult.none)) {
+    return _connectivity.onConnectivityChanged.map((result) {
+      // connectivity_plus 5.0.2 onConnectivityChanged returns Stream<List<ConnectivityResult>>
+      // but actually returns single ConnectivityResult at runtime
+      if (result is List<ConnectivityResult>) {
+        if (result.isEmpty || result.every((r) => r == ConnectivityResult.none)) {
           return ConnectivityResult.none;
         }
-        return results.firstWhere(
+        return result.firstWhere(
           (r) => r != ConnectivityResult.none,
           orElse: () => ConnectivityResult.none,
         );
       }
-      // Fallback for older versions
-      return results as ConnectivityResult;
+      // Single ConnectivityResult
+      return result as ConnectivityResult;
     });
   }
 }
