@@ -49,17 +49,16 @@ class ChatPage extends ConsumerWidget {
           if (searchState.query.isEmpty) ...[
             IconButton(
               icon: const Icon(Icons.sort),
-              onPressed: () => _showSortBottomSheet(context, ref),
+              onPressed: () {
+                // TODO: 정렬 바텀시트 구현
+              },
             ),
-            if (filterState.hasActiveFilters)
-              IconButton(
-                icon: const Icon(Icons.filter_alt),
-                color: AppColors.primary,
-                onPressed: () => _showFilterBottomSheet(context, ref),
-              ),
             IconButton(
               icon: Icon(filterState.hasActiveFilters ? Icons.filter_alt : Icons.filter_list),
-              onPressed: () => _showFilterBottomSheet(context, ref),
+              color: filterState.hasActiveFilters ? AppColors.primary : null,
+              onPressed: () {
+                // TODO: 필터 바텀시트 구현
+              },
             ),
             IconButton(
               icon: const Icon(Icons.search),
