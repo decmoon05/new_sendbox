@@ -5,6 +5,7 @@ import 'package:isar/isar.dart';
 import 'core/init/app_init.dart';
 import 'core/theme/app_theme.dart';
 import 'core/di/providers.dart';
+import 'core/di/providers_platform.dart';
 import 'data/services/storage/isar_storage.dart';
 import 'presentation/routes/app_router.dart';
 import 'presentation/routes/route_names.dart';
