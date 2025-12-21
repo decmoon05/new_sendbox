@@ -564,15 +564,28 @@ class _ConversationListItemWithActions extends StatelessWidget {
             children: [
               ListTile(
                 leading: Icon(conversation.isPinned ? Icons.push_pin : Icons.push_pin_outlined),
-                title: Text(conversation.isPinned ? '고정 해제' : '고정하기'),
+                title: Text(conversation.isPinned ? '고정 해제' : '대화 고정'),
                 onTap: () {
                   Navigator.pop(context);
-                  _togglePin(context, conversation);
+                  ref.read(chatProvider.notifier).togglePin(conversation.id, !conversation.isPinned);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(conversation.isPinned ? '고정 해제됨' : '고정됨'),
+                    ),
+                  );
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.delete_outline),
-                title: const Text('삭제'),
+                leading: const Icon(Icons.mark_chat_read_outlined),
+                title: const Text('모두 읽음으로 표시'),
+                onTap: () {
+                  Navigator.pop(context);
+                  ref.read(chatProvider.notifier).markAsRead(conversation.id);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.delete_outline, color: AppColors.error),
+                title: const Text('대화 삭제', style: TextStyle(color: AppColors.error)),
                 onTap: () {
                   Navigator.pop(context);
                   _showDeleteConfirmation(context, conversation);
