@@ -132,6 +132,10 @@ class ChatPage extends ConsumerWidget {
 
     return ListView.builder(
       itemCount: state.conversations.length,
+      // 성능 최적화: 각 아이템의 예상 높이 설정 (약 80px)
+      itemExtent: 80,
+      // 캐시 크기 설정 (화면 밖 위아래로 5개 아이템 캐시)
+      cacheExtent: 400,
       itemBuilder: (context, index) {
         final conversation = state.conversations[index];
         return _ConversationListItem(conversation: conversation);
