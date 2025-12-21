@@ -110,8 +110,14 @@ class SmsSyncService {
           },
         );
 
+        // 기존 대화에서 메시지 가져오기 (있으면)
+        final existingMessages = existingConvResult.fold(
+          (failure) => <Message>[],
+          (conv) => conv.messages,
+        );
+        
         // SMS 메시지를 Conversation 메시지로 변환
-        final conversationMessages = limitedMessages.map((smsData) {
+        final newConversationMessages = limitedMessages.map((smsData) {
           final timestamp = DateTime.fromMillisecondsSinceEpoch(
             smsData['timestamp'] as int? ?? DateTime.now().millisecondsSinceEpoch,
           );
@@ -158,7 +164,7 @@ class SmsSyncService {
           platform: 'sms',
           messages: uniqueMessages,
           lastMessageAt: lastMessage?.timestamp ?? DateTime.now(),
-          unreadCount: conversationMessages
+          unreadCount: uniqueMessages
               .where((m) => !m.isRead && m.type == MessageType.received)
               .length,
           isPinned: false,
