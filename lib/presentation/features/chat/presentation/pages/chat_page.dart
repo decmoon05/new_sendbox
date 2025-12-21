@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/chat_provider.dart';
 import '../providers/chat_search_provider.dart';
 import '../providers/chat_filter_provider.dart';
+import '../providers/chat_sort_provider.dart';
 import '../../../../../domain/usecases/conversation/toggle_pin_conversation.dart';
 import '../../../../../core/di/providers.dart';
 import '../../../../../domain/entities/conversation.dart';
@@ -71,7 +72,7 @@ class ChatPage extends ConsumerWidget {
         onRefresh: () => ref.read(chatProvider.notifier).refresh(),
         child: searchState.query.isNotEmpty
             ? _buildSearchResults(context, searchState)
-            : _buildBody(context, chatState.copyWith(conversations: filteredConversations)),
+            : _buildBody(context, chatState.copyWith(conversations: sortedConversations)),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
