@@ -25,15 +25,18 @@ void main() async {
     ],
   );
 
-  // 샘플 데이터 시딩 (비동기로 실행, 앱 시작을 막지 않음)
-  _seedSampleData(container);
-  
-  runApp(
-    UncontrolledProviderScope(
-      container: container,
-      child: const SendBoxApp(),
-    ),
-  );
+      // 샘플 데이터 시딩 (비동기로 실행, 앱 시작을 막지 않음)
+      _seedSampleData(container);
+      
+      // SMS 리스너 시작 (비동기로 실행, 앱 시작을 막지 않음)
+      _startSmsListener(container);
+      
+      runApp(
+        UncontrolledProviderScope(
+          container: container,
+          child: const SendBoxApp(),
+        ),
+      );
 }
 
 /// 샘플 데이터 시딩
@@ -50,6 +53,20 @@ void _seedSampleData(ProviderContainer container) {
       );
     } catch (e) {
       debugPrint('샘플 데이터 시딩 실패: $e');
+    }
+  });
+}
+
+/// SMS 리스너 시작
+void _startSmsListener(ProviderContainer container) {
+  // 비동기로 실행하되 앱 시작을 막지 않음
+  Future.microtask(() async {
+    try {
+      final smsListenerService = container.read(smsListenerServiceProvider);
+      await smsListenerService.startListening();
+      debugPrint('SMS 리스너 시작 완료');
+    } catch (e) {
+      debugPrint('SMS 리스너 시작 실패: $e');
     }
   });
 }
