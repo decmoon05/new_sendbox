@@ -46,14 +46,14 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
         title: Text(
           chatDetailState.conversation?.contactId ?? '대화',
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.info_outline),
-            onPressed: () {
-              // TODO: 프로필 상세 보기
-            },
-          ),
-        ],
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.info_outline),
+                onPressed: () {
+                  _showProfileDetail(context, chatDetailState);
+                },
+              ),
+            ],
       ),
       body: Column(
         children: [
