@@ -48,14 +48,43 @@ class SmsSyncService {
         final phoneNumber = entry.key;
         final messages = entry.value;
         
-        // 최신 순으로 정렬 및 제한
+        // 기존 대화 확인
+        final existingConvResult = await conversationRepository.getConversation(phoneNumber);
+        
+        // 최신 순으로 정렬
         messages.sort((a, b) {
           final timeA = a['timestamp'] as int? ?? 0;
           final timeB = b['timestamp'] as int? ?? 0;
           return timeB.compareTo(timeA); // 내림차순
         });
         
-        final limitedMessages = messages.take(limitPerContact).toList();
+        // 기존 대화가 있으면 최신 메시지만 추가 (중복 방지)
+        DateTime? lastSyncTime;
+        existingConvResult.fold(
+          (_) {},
+          (existingConv) {
+            if (existingConv.messages.isNotEmpty) {
+              lastSyncTime = existingConv.messages.last.timestamp;
+            }
+          },
+        );
+        
+        // 마지막 동기화 시간 이후의 메시지만 필터링
+        final newMessages = lastSyncTime != null
+            ? messages.where((sms) {
+                final smsTime = DateTime.fromMillisecondsSinceEpoch(
+                  sms['timestamp'] as int? ?? 0,
+                );
+                return smsTime.isAfter(lastSyncTime!);
+              }).toList()
+            : messages;
+        
+        final limitedMessages = newMessages.take(limitPerContact).toList();
+        
+        // 새 메시지가 없으면 건너뜀
+        if (limitedMessages.isEmpty) {
+          continue;
+        }
         
         // 프로필에서 연락처 이름 찾기
         final profilesResult = await profileRepository.getProfiles();
@@ -102,19 +131,32 @@ class SmsSyncService {
           );
         }).toList();
 
+        // 기존 메시지와 새 메시지 병합
+        final allMessages = [...existingMessages, ...newConversationMessages];
+        
         // 시간순으로 정렬 (오래된 것부터)
-        conversationMessages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+        allMessages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+        
+        // 중복 제거 (같은 ID를 가진 메시지)
+        final uniqueMessages = <Message>[];
+        final seenIds = <String>{};
+        for (final msg in allMessages) {
+          if (!seenIds.contains(msg.id)) {
+            seenIds.add(msg.id);
+            uniqueMessages.add(msg);
+          }
+        }
 
-        // Conversation 생성
-        final lastMessage = conversationMessages.isNotEmpty 
-            ? conversationMessages.last 
+        // Conversation 생성/업데이트
+        final lastMessage = uniqueMessages.isNotEmpty 
+            ? uniqueMessages.last 
             : null;
         
         final conversation = Conversation(
           id: phoneNumber,
           contactId: contactName,
           platform: 'sms',
-          messages: conversationMessages,
+          messages: uniqueMessages,
           lastMessageAt: lastMessage?.timestamp ?? DateTime.now(),
           unreadCount: conversationMessages
               .where((m) => !m.isRead && m.type == MessageType.received)

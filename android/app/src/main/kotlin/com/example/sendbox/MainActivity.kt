@@ -164,9 +164,9 @@ class MainActivity: FlutterActivity() {
                     android.provider.Telephony.Sms.TYPE,
                     android.provider.Telephony.Sms.READ
                 ),
-                if (phoneNumber != null) "${android.provider.Telephony.Sms.ADDRESS} = ?" else null,
+                if (phoneNumber != null) "${android.provider.Telephony.Sms.ADDRESS} = ?" else                 if (phoneNumber != null) "${android.provider.Telephony.Sms.ADDRESS} = ?" else null,
                 if (phoneNumber != null) arrayOf(phoneNumber) else null,
-                "${android.provider.Telephony.Sms.DATE} DESC LIMIT $limit"
+                "${android.provider.Telephony.Sms.DATE} DESC"
             )
             
             cursor?.use {
