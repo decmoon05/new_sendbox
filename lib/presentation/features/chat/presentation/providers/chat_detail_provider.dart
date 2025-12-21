@@ -4,6 +4,7 @@ import '../../../../../domain/entities/message.dart';
 import '../../../../../domain/repositories/conversation_repository.dart';
 import '../../../../../core/di/providers.dart';
 import '../../../../../core/errors/failures.dart';
+import 'chat_provider.dart';
 
 /// 대화 상세 상태
 class ChatDetailState {
@@ -36,10 +37,12 @@ final chatDetailProvider = StateNotifierProvider.family<
     ChatDetailState,
     String>((ref, conversationId) {
   final repository = ref.watch(conversationRepositoryProvider);
+  final chatNotifier = ref.watch(chatProvider.notifier);
 
   return ChatDetailNotifier(
     repository: repository,
     conversationId: conversationId,
+    chatNotifier: chatNotifier,
   );
 });
 
@@ -47,10 +50,12 @@ final chatDetailProvider = StateNotifierProvider.family<
 class ChatDetailNotifier extends StateNotifier<ChatDetailState> {
   final ConversationRepository repository;
   final String conversationId;
+  final ChatNotifier? chatNotifier;
 
   ChatDetailNotifier({
     required this.repository,
     required this.conversationId,
+    this.chatNotifier,
   }) : super(const ChatDetailState()) {
     loadConversation();
   }
@@ -109,6 +114,9 @@ class ChatDetailNotifier extends StateNotifier<ChatDetailState> {
       (_) {
         // 저장 성공 시 상태 업데이트
         state = state.copyWith(conversation: updatedConversation);
+        
+        // 대화 목록도 새로고침 (목록의 lastMessageAt 업데이트를 위해)
+        chatNotifier?.refresh();
       },
     );
   }
